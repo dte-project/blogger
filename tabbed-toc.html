@@ -11,8 +11,6 @@
   <body spellcheck="false">
     <textarea id="settings">{
 
-  "url": "http://dte-feed.blogspot.com", // optional
-
   // `1`: ascending
   // `-1`: descending
   // `"function_name"`: custom
@@ -121,7 +119,9 @@
             results.innerHTML = '&lt;link href="' + url.replace(/\.html$/, '/224c19.min.css') + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
             var script = document.createElement('script');
             script.id = 'demo-js';
-            value.url = '//dte-history.blogspot.com';
+            if (!value.url) {
+                value.url = '//dte-history.blogspot.com';
+            }
             // value.ad = false;
             value.container = '#demo';
             if (value.load === true) {

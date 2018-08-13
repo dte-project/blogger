@@ -242,7 +242,7 @@
         return $;
     }
 
-    var url = settings.url.split(/[?&#]/)[0].replace(/\/+/, ""),
+    var url = settings.url.split(/[?&#]/)[0].replace(/\/+$/, ""),
         name = settings.name,
         ad = settings.ad,
         text = settings.text,
