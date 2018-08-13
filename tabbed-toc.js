@@ -257,7 +257,7 @@
 
     function _show() {
         if (ad !== false) {
-            var i = +(storage.getItem(name) || -1);console.log(i)
+            var i = +(storage.getItem(name) || -1);
             if (i > ad) {
                 storage.setItem(name, 0);
                 return true;
