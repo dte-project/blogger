@@ -106,7 +106,6 @@
         results = document.getElementById('results'),
         demo = document.getElementById('demo'),
         url = location.href.split(/[?&#]/)[0], timer;
-
     function update() {
         value = (settings.value.trim() || '{}')
             .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -114,9 +113,9 @@
             .replace(/[ ]*\/\/[^"'\n]*$/gm, "")
             .replace(/\s*,\s*[\]\}]/g, '}');
         try {
-            var src = url.replace(/\.html$/, '.min.js'), el;
+            var src = url.replace(/^https?:/, "").replace(/\.html$/, '.min.js'), el;
             value = JSON.parse(value);
-            results.innerHTML = '&lt;link href="' + url.replace(/\.html$/, '/224c19.min.css') + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
+            results.innerHTML = '&lt;link href="' + url.replace(/^https?:/, "").replace(/\.html$/, '/224c19.min.css') + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
             var script = document.createElement('script');
             script.id = 'demo-js';
             if (!value.url) {
@@ -127,7 +126,7 @@
             if (value.load === true) {
                 value.load = 0;
             }
-            script.src = src.replace('.min.', '.') + param(value, '&amp;');
+            script.src = src.replace('.min.', '.') + param(value, '&amp;') + '&ampv=' + Date.now();
             timer && clearTimeout(timer);
             timer = setTimeout(function() {
                 demo.innerHTML = "";
