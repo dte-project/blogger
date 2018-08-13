@@ -159,7 +159,7 @@
         infinity = 9999,
         storage = win.localStorage,
         defaults = {
-            source: 'http://dte-history.blogspot.com',
+            source: '//dte-history.blogspot.com',
             url: location.protocol + '//' + location.host,
             name: 'tabbed-toc',
             sort: 1, // `1` or `-1` or `function_name`
