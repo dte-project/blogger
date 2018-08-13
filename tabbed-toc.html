@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tabbed TOC for Blogger</title>
+    <style>body,html{margin:0;padding:0;background:#d5c38d;color:#000}body{font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;padding:2em}pre,textarea{font:normal normal 12px/1.5 "Courier New",Courier,monospace;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;background:#333;border:2px solid #e0d19b;color:#fff;margin:0 0 2em;padding:1em;box-shadow:0 1px 3px rgba(0,0,0,.4);height:30em;width:49.5%;float:left;resize:vertical;overflow:auto}pre{float:right;white-space:pre-wrap;background:#aae09d;color:inherit;border-color:inherit}.tabbed-toc{clear:both}</style>
+    <link href="favicon.ico" rel="shortcut icon">
+    <link href="tabbed-toc/224c19.min.css" rel="stylesheet">
+  </head>
+  <body spellcheck="false">
+    <textarea id="settings">{
+
+  "url": "http://dte-feed.blogspot.com", // optional
+
+  // `1`: ascending
+  // `-1`: descending
+  // `"function_name"`: custom
+  "sort": 1,
+
+  // `0`: will activate the first tab on load
+  // `1`: will activate the second tab on load
+  // `"Autumn"`: will activate a tab with label &ldquo;Autumn&rdquo;
+  "active": 0,
+
+  // `false` to put the widget right before the `&lt;script&gt;` tag or
+  // `"#toc-container"` to put the widget in `&lt;div id="toc-container"&gt;&lt;/div&gt;`
+  "container": false,
+
+  // set to `false` to hide the date
+  // `%Y`: year
+  // `%M`: month
+  // `%D`: day
+  // `%h`: hour
+  // `%m`: minute
+  // `%s`: second
+  // `%M+`: month name
+  // `%D+`: day name
+  "date": "%D+, %D %M+ %Y %h:%m",
+
+  // set to `false` or `0` to hide the excerpt
+  "excerpt": false,
+
+  // set to `false` or `0` to hide the image
+  "image": false,
+
+  // the link target, set to `"_blank"` to open link in a new tab
+  "target": false,
+
+  // `0`: load immediatelly
+  // `3000`: load after 3000 milliseconds
+  // `true`: load after everything has finished loading
+  "load": 0,
+
+  // number of posts to be marked as the most recent posts
+  "recent": 5,
+
+  // list of label name to hide
+  // example: `["Autumn", "Spring", "Winter"]`
+  "hide": [],
+
+  /*
+  "text": {
+    "title": "Table of Content",
+    "loading": "Loading&hellip;",
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "days": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "recent": " &lt;sup&gt;New!&lt;/sup&gt;"
+  }
+  */
+
+}</textarea>
+    <pre id="results" contenteditable></pre>
+    <div id="demo"></div>
+    <script>
+    function param(o, separator) {
+        var s = [], i;
+        for (i in o) {
+            if (typeof o[i] === "object") {
+                o[i] = JSON.stringify(o[i]);
+            }
+            s.push(encodeURIComponent(i) + '=' + encodeURIComponent(o[i]));
+        }
+        return '?' + s.join(separator || '&');
+    }
+    var settings = document.getElementById('settings'),
+        results = document.getElementById('results'),
+        demo = document.getElementById('demo'),
+        url = location.href.split(/[?&#]/)[0], timer;
+
+    function update() {
+        value = (settings.value.trim() || '{}')
+            .replace(/\/\*[\s\S]*?\*\//g, "")
+            .replace(/^[ ]*\/\/.*/gm, "")
+            .replace(/[ ]*\/\/[^"'\n]*$/gm, "")
+            .replace(/\s*,\s*[\]\}]/g, '}');
+        try {
+            var src = url.replace(/\.html$/, '.min.js'), el;
+            value = JSON.parse(value);
+            results.innerHTML = '&lt;link href="' + url.replace(/\.html$/, '/224c19.min.css') + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
+            var script = document.createElement('script');
+            script.id = 'demo-js';
+            value.url = 'http://dte-history.blogspot.com';
+            // value.ad = false;
+            value.container = '#demo';
+            if (value.load === true) {
+                value.load = 0;
+            }
+            script.src = src.replace('.min.', '.') + param(value, '&amp;');
+            timer && clearTimeout(timer);
+            timer = setTimeout(function() {
+                demo.innerHTML = "";
+                if (el = document.getElementById('demo-js')) {
+                    el.parentNode.removeChild(el);
+                }
+                document.body.appendChild(script);
+            }, 1000);
+        } catch (e) {
+            results.innerHTML = e;
+        }
+    }
+    settings.onkeyup = update;
+    settings.onpaste = update;
+    settings.oncut = update;
+    update();
+    </script>
+  </body>
+</html>
