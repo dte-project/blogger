@@ -340,14 +340,14 @@
                 panels[i].previousSibling.style.display = 'none';
                 reset_class(panels[i], 'active');
             }
-            if (!panels[term]) {
+            if (!panels[term].$) {
                 set_class(current, 'active loading');
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
                 load(url + '/feeds/posts/summary/-/' + encode(term) + param(extend(settings.query, {
-                        'callback': '_' + (hash + 1),
-                        'max-results': infinity
-                    })), function() {
+                    'callback': '_' + (hash + 1),
+                    'max-results': infinity
+                })), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
                     detach(loading);
@@ -355,18 +355,22 @@
                     'class': name + '-js',
                     'id': name + '-js:' + id
                 });
-            } else {
-                set_class(current, 'active');
-                panels[term].style.display = "";
-                panels[term].previousSibling.style.display = "";
-                set_class(panels[term], 'active');
             }
+            set_class(current, 'active');
+            panels[term].style.display = "";
+            panels[term].previousSibling.style.display = "";
+            set_class(panels[term], 'active');
             e.preventDefault();
         }
 
         var nav = el('nav', "", {
                 'class': name + '-tabs p'
             }), a;
+
+        insert(container, nav);
+        insert(container, el('section', "", {
+            'class': name + '-panels p'
+        }));
 
         for (i = 0; i < category_length; ++i) {
             var term = category[i].term;
@@ -386,12 +390,14 @@
             if (i < category_length - 1) {
                 insert(nav, doc.createTextNode(' ')); // insert space
             }
+            insert(container.children[2], el('h4', term, {
+                'class': name + '-title'
+            }));
+            insert(container.children[2], panels[term] = el('ol', "", {
+                'class': name + '-panel ' + name + '-panel:' + i + ' active',
+                'id': name + '-panel:' + hash + '.' + i
+            }));
         }
-
-        insert(container, nav);
-        insert(container, el('section', "", {
-            'class': name + '-panels p'
-        }));
 
     };
 
@@ -403,16 +409,11 @@
             term = clicked ? clicked.innerHTML : "",
             entry = $.entry || [],
             entry_length = entry.length,
-            ol = el('ol', "", {
-                'class': name + '-panel ' + name + '-panel:' + index + ' active',
-                'id': name + '-panel:' + hash + '.' + index
-            }), i, j, k;
-
-        panels[term] = ol;
+            ol = panels[term], i, j, k;
 
         for (i = 0; i < entry_length; ++i) {
             var suffix = i <= settings.recent ? text.recent : "";
-            entry[i].marked = !!suffix;
+            entry[i].$ = !!suffix;
             entry[i].title.$t += suffix;
         }
 
@@ -470,7 +471,7 @@
                 str += '<p class="' + name + '-excerpt' + (has_excerpt ? "" : ' no-excerpt') + '">' + summary.slice(0, excerpt) + (has_excerpt > excerpt ? '&hellip;' : "") + '</p>';
             }
             return el('li', str, {
-                'class': current.marked ? 'recent' : false
+                'class': current.$ ? 'recent' : false
             });
         }
 
@@ -490,16 +491,13 @@
             };
             load('//www.blogger.com/feeds/298900102869691923/posts/summary' + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
-                'max-results': 100
+                'max-results': infinity
             })) + '&q=' + encode(term.toLowerCase()));
         } else {
             delete win['_' + hash + '_'];
         }
 
-        insert(container.children[2], el('h4', term, {
-            'class': name + '-title'
-        }));
-        insert(container.children[2], ol);
+        panels[term].$ = true;
 
     };
 

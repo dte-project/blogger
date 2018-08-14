@@ -15,6 +15,10 @@
   font-weight:bold;
   position:relative;
 }
+.tabbed-toc-loading .tabbed-toc-tab:not(.loading) {
+  pointer-events:none;
+  opacity:.5;
+}
 .tabbed-toc-tab:focus,
 .tabbed-toc-tab:hover {
   background:rgba(0,0,0,.125);
