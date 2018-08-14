@@ -18,8 +18,8 @@
         return typeof x === "string";
     }
 
-    function is_int(x) {
-        return typeof x === "number";
+    function is_number(x) {
+        return typeof x === "number" || /^-?(\d*\.)?\d+$/.test(x);
     }
 
     function is_object(x) {
@@ -54,7 +54,7 @@
                 return null;
             } else if (x.slice(0, 1) === "'" && x.slice(-1) === "'") {
                 return x.slice(1, -1);
-            } else if (/^((\d+)?\.)?\d+$/.test(x)) {
+            } else if (/^-?(\d*\.)?\d+$/.test(x) && x >= Number.MIN_SAFE_INTEGER && x <= Number.MAX_SAFE_INTEGER) {
                 return +x;
             } else if (maybe_json(x)) {
                 try {
@@ -112,14 +112,6 @@
             }
         }
         return a;
-    }
-
-    function canon(url, x) {
-        url = url.split(/[?&#]/)[0].replace(/\/+$/, "");
-        if (is_set(x)) {
-            url = url.replace(/\.[\w-]+$/, x ? '.' + x : "");
-        }
-        return url;
     }
 
     function on(el, ev, fn) {
@@ -234,8 +226,25 @@
         return '?' + s.join(separator || '&');
     }
 
+    function canon(url, x) {
+        url = (url + "").split(/[?&#]/)[0].replace(/\/+$/, "");
+        if (is_set(x)) {
+            url = url.replace(/\.[\w-]+$/, x ? '.' + x : "");
+        }
+        return url;
+    }
+
+    function blogger(url) {
+        // `url` is a blog ID
+        if (is_number(url)) {
+            return (loc.protocol === 'file:' ? 'https:' : "") + '//www.blogger.com/feeds/' + url + '/posts/summary';
+        }
+        // `url` is a blog URL
+        return canon(url) + '/feeds/posts/summary';
+    }
+
     function load(url, fn, attr) {
-        var css = /\.css$/i.test(url.split(/[?&#]/)[0]),
+        var css = /\.css$/i.test(canon(url)),
             $ = el(css ? 'link' : 'script', "", extend(css ? {
                 'href': url,
                 'rel': 'stylesheet'
@@ -324,7 +333,7 @@
 
         var sort = settings.sort;
 
-        if (is_int(sort) || /^-?1$/.test(sort)) {
+        if (is_number(sort)) {
             sort = +sort;
             category = category.sort(function(a, b) {
                 return a.term.localeCompare(b.term);
@@ -355,7 +364,7 @@
                 set_class(current, 'active loading');
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
-                load(url + '/feeds/posts/summary/-/' + encode(term) + param(extend(settings.query, {
+                load(blogger(url) + '/-/' + encode(term) + param(extend(settings.query, {
                     'callback': '_' + (hash + 1),
                     'max-results': infinity
                 })), function() {
@@ -430,7 +439,7 @@
 
         var sort = settings.sort;
 
-        if (is_int(sort) || /^-?1$/.test(sort)) {
+        if (is_number(sort)) {
             sort = +sort;
             entry = entry.sort(function(a, b) {
                 return a.title.$t.localeCompare(b.title.$t);
@@ -500,9 +509,9 @@
                     insert(ol, entry, ol.firstChild);
                 }
             };
-            load('//www.blogger.com/feeds/298900102869691923/posts/summary' + param(extend(settings.query, {
+            load(blogger('298900102869691923') + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
-                'max-results': infinity
+                'max-results': 21
             })) + '&q=' + encode(term.toLowerCase()));
         } else {
             delete win['_' + hash + '_'];
@@ -516,7 +525,7 @@
         if (settings.css) {
             load(canon(script.src, 'css'));
         }
-        load(url + '/feeds/posts/summary' + param(extend(settings.query, {
+        load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + hash,
             'max-results': 0
         })), function() {
@@ -529,15 +538,15 @@
             }
             reset_class(container.parentNode, name + '-loading');
             var active = settings.active;
-            if (is_int(active)) {
+            if (is_number(active)) {
                 active = tabs_indexes[active];
             }
             tabs[active] && tabs[active].click();
         });
     }
 
-    if (is_int(settings.load)) {
-        win.setTimeout(fire, settings.load);
+    if (is_number(settings.load)) {
+        win.setTimeout(fire, +settings.load);
     } else if (settings.load === true) {
         on(win, "load", fire);
     } else {
