@@ -102,6 +102,13 @@
   margin-left:.5em;
 }
 
+.has-excerpt .tabbed-toc-panel .tabbed-toc-title sup {
+  line-height:1;
+  font-size:.75em;
+  vertical-align:top;
+  margin-left:0;
+}
+
 .tabbed-toc-panel .tabbed-toc-time {
   position:absolute;
   top:0;

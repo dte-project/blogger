@@ -152,27 +152,30 @@
         container.insertBefore(el, before);
     }
 
+    function detach(el) {
+        el.parentNode.removeChild(el);
+    }
+
     var tabs = {},
         tabs_indexes = [],
         panels = {}, clicked,
-        hash = Date.now(),
         infinity = 9999,
         storage = win.localStorage,
         defaults = {
-            source: '//dte-history.blogspot.com',
+            hash: Date.now(),
             url: location.protocol + '//' + location.host,
             name: 'tabbed-toc',
-            sort: 1, // `1` or `-1` or `function_name`
+            sort: 1,
             ad: true,
-            active: 0, // the first tab
-            container: 0, // `false`
-            date: '%D+, %D %M+ %Y %h:%m', // `false` to hide
-            excerpt: 0, // `false`
-            image: 0, // `false`
-            target: 0, // `_self`
-            load: 0, // `0` to load immediately, `true` to load on `window.onload` event
+            active: 0,
+            container: 0,
+            date: '%D+, %D %M+ %Y %h:%m',
+            excerpt: 0,
+            image: 0,
+            target: 0,
+            load: 0,
             recent: 7,
-            hide: [], // list of label name to hide
+            hide: [],
             text: {
                 title: 'Table of Content',
                 loading: 'Loading&hellip;',
@@ -221,7 +224,7 @@
     }
 
     function load(url, fn, attr) {
-        var css = /\.css([?&#].*)?$/i.test(url),
+        var css = /\.css$/i.test(url.split(/[?&#]/)[0]),
             $ = el(css ? 'link' : 'script', "", extend(css ? {
                 'href': url,
                 'rel': 'stylesheet'
@@ -242,7 +245,8 @@
         return $;
     }
 
-    var url = settings.url.split(/[?&#]/)[0].replace(/\/+$/, ""),
+    var hash = settings.hash,
+        url = settings.url.split(/[?&#]/)[0].replace(/\/+$/, ""),
         name = settings.name,
         ad = settings.ad,
         text = settings.text,
@@ -253,6 +257,13 @@
 
     if (ad === true) {
         ad = 3;
+    }
+
+    // Allow to update settings through current URL query string
+    var settings_alt = query_eval(location.search);
+    if (is_set(settings_alt[hash])) {
+        delete settings_alt[hash].url; // but `url`
+        settings = extend(settings, settings_alt[hash]);
     }
 
     function _show() {
@@ -299,7 +310,7 @@
 
         var sort = settings.sort;
 
-        if (is_int(sort) || /^\-1|1$/.test(sort)) {
+        if (is_int(sort) || /^-?1$/.test(sort)) {
             sort = +sort;
             category = category.sort(function(a, b) {
                 return a.term.localeCompare(b.term);
@@ -323,7 +334,7 @@
             }
             for (i in panels) {
                 panels[i].style.display = 'none';
-                panels[i].previousElementSibling.style.display = 'none';
+                panels[i].previousSibling.style.display = 'none';
                 reset_class(panels[i], 'active');
             }
             if (!panels[term]) {
@@ -334,11 +345,12 @@
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
                 load(url + '/feeds/posts/summary/-/' + encode(term) + param(extend(settings.query, {
+                        'callback': '_' + (hash + 1),
                         'max-results': infinity
-                    })) + '&callback=_' + (hash + 1), function() {
-                    container.children[2].removeChild(loading);
+                    })), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
+                    detach(loading);
                 }, {
                     'class': name + '-js',
                     'id': name + '-js:' + id
@@ -346,7 +358,7 @@
             } else {
                 set_class(current, 'active');
                 panels[term].style.display = "";
-                panels[term].previousElementSibling.style.display = "";
+                panels[term].previousSibling.style.display = "";
                 set_class(panels[term], 'active');
             }
             e.preventDefault();
@@ -361,19 +373,19 @@
             if (settings.hide.indexOf(term) > -1) {
                 continue;
             }
-            tabs_indexes.push(term);
             a = el('a', term, {
                 'class': name + '-tab ' + name + '-tab:' + i,
-                'href': '#' + name + '-panel:' + hash + '-' + i,
-                'id': name + '-tab:' + hash + '-' + i,
+                'href': '#' + name + '-panel:' + hash + '.' + i,
+                'id': name + '-tab:' + hash + '.' + i,
                 'title': term
             });
+            tabs_indexes.push(term);
+            tabs[term] = a;
             on(a, "click", click);
             insert(nav, a);
             if (i < category_length - 1) {
                 insert(nav, doc.createTextNode(' ')); // insert space
             }
-            tabs[term] = a;
         }
 
         insert(container, nav);
@@ -387,14 +399,16 @@
 
         $ = $.feed || {};
 
-        var index = clicked ? clicked.id.split(':')[1].split('-')[1] : "",
+        var index = clicked ? clicked.id.split(':')[1].split('.')[1] : "",
             term = clicked ? clicked.innerHTML : "",
             entry = $.entry || [],
             entry_length = entry.length,
             ol = el('ol', "", {
                 'class': name + '-panel ' + name + '-panel:' + index + ' active',
-                'id': name + '-panel:' + hash + '-' + index
-            }), li, i, j, k;
+                'id': name + '-panel:' + hash + '.' + index
+            }), i, j, k;
+
+        panels[term] = ol;
 
         for (i = 0; i < entry_length; ++i) {
             var suffix = i <= settings.recent ? text.recent : "";
@@ -404,7 +418,7 @@
 
         var sort = settings.sort;
 
-        if (is_int(sort) || /^\-1|1$/.test(sort)) {
+        if (is_int(sort) || /^-?1$/.test(sort)) {
             sort = +sort;
             entry = entry.sort(function(a, b) {
                 return a.title.$t.localeCompare(b.title.$t);
@@ -430,14 +444,14 @@
 
         function list(current) {
             if (!current) return;
-            var date = current.published.$t, url;
+            var date = current.published.$t,
+                str = "", url;
             for (j = 0, k = current.link.length; j < k; ++j) {
                 if (current.link[j].rel === "alternate") {
                     url = current.link[j].href;
                     break;
                 }
             }
-            var str = "";
             str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
             if (settings.date) {
                 str += '<p class="' + name + '-time"><time datetime="' + date + '">' + format(date, settings.date) + '</time></p>';
@@ -468,18 +482,18 @@
             if (!win['_' + hash + '_']) {
                 win['_' + hash + '_'] = function($) {
                     $ = $.feed || {};
-                    var entry = $.entry || [],
-                        entry_length = entry.length;
-                    entry = entry[Math.floor(Math.random() * entry_length)];
+                    var entry = $.entry || [];
+                    entry = entry[Math.floor(Math.random() * entry.length)];
                     if (entry = list(entry)) {
                         set_class(entry, 'ad');
                         insert(ol, entry, ol.firstChild);
                     }
                 };
             }
-            load(defaults.source + '/feeds/posts/summary' + param(extend(settings.query, {
-                'max-results': null
-            })) + '&q=' + encode(term) + '&callback=_' + hash + '_');
+            load('//www.blogger.com/feeds/298900102869691923/posts/summary' + param(extend(settings.query, {
+                'callback': '_' + hash + '_',
+                'max-results': 100
+            })) + '&q=' + encode(term));
         }
 
         insert(container.children[2], el('h4', term, {
@@ -487,19 +501,18 @@
         }));
         insert(container.children[2], ol);
 
-        panels[term] = ol;
-
     };
 
     function fire() {
         load(script.src.split(/[?&#]/)[0].replace(/\.js$/, '.css'));
         load(url + '/feeds/posts/summary' + param(extend(settings.query, {
+            'callback': '_' + hash,
             'max-results': 0
-        })) + '&callback=_' + hash, function() {
+        })), function() {
             var c = settings.container;
             if (c) {
                 c = doc.querySelector(c);
-                c && insert(c, container);
+                c && (c.innerHTML = ""), insert(c, container);
             } else {
                 insert(script.parentNode, container, script);
             }

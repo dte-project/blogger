@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Tabbed TOC for Blogger</title>
-    <style>body,html{margin:0;padding:0;background:#d5c38d;color:#000}body{font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;padding:2em}pre,textarea{font:normal normal 12px/1.5 "Courier New",Courier,monospace;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;background:#333;border:2px solid #e0d19b;color:#fff;margin:0 0 2em;padding:1em;box-shadow:0 1px 3px rgba(0,0,0,.4);height:30em;width:49.5%;float:left;resize:vertical;overflow:auto}pre{float:right;white-space:pre-wrap;background:#aae09d;color:inherit;border-color:inherit}.tabbed-toc{clear:both}</style>
+    <style>body,html{margin:0;padding:0;background:#d5c38d;color:#000}body{font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;padding:2em}pre,textarea{cursor:auto;font:normal normal 12px/1.5 "Courier New",Courier,monospace;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;background:#333;border:2px solid #e0d19b;color:#fff;margin:0 0 2em;padding:1em;box-shadow:0 1px 3px rgba(0,0,0,.4);height:30em;width:49.5%;float:left;resize:vertical;overflow:auto}pre{float:right;white-space:pre-wrap;background:#aae09d;color:inherit;border-color:inherit}.tabbed-toc{clear:both}</style>
     <link href="favicon.ico" rel="shortcut icon">
     <link href="tabbed-toc/224c19.min.css" rel="stylesheet">
   </head>
@@ -117,20 +117,23 @@
             value = JSON.parse(value);
             results.innerHTML = '&lt;link href="' + url.replace(/^https?:/, "").replace(/\.html$/, '/224c19.min.css') + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
             var script = document.createElement('script');
-            script.id = 'demo-js';
-            if (!value.url) {
-                value.url = '//dte-history.blogspot.com';
+            script.id = 'test-js';
+            if (!value.hash) {
+                value.hash = 'test';
             }
-            value.ad = false;
+            if (!value.url) {
+                value.url = 'http://dte-history.blogspot.com';
+            }
+            // value.ad = false;
             value.container = '#demo';
             if (value.load === true) {
                 value.load = 0;
             }
-            script.src = src.replace('.min.', '.') + param(value, '&amp;') + '&ampv=' + Date.now();
+            script.src = src.replace('.min.', '.') + param(value, '&amp;') + '&amp;v=' + Date.now();
             timer && clearTimeout(timer);
             timer = setTimeout(function() {
                 demo.innerHTML = "";
-                if (el = document.getElementById('demo-js')) {
+                if (el = document.getElementById('test-js')) {
                     el.parentNode.removeChild(el);
                 }
                 document.body.appendChild(script);
