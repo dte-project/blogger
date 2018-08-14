@@ -122,9 +122,9 @@
                 value.hash = 'test';
             }
             if (!value.url) {
-                value.url = 'http://dte-history.blogspot.com';
+                value.url = '//dte-history.blogspot.com';
             }
-            // value.ad = false;
+            value.ad = false;
             value.container = '#demo';
             if (value.load === true) {
                 value.load = 0;
@@ -132,7 +132,6 @@
             script.src = src.replace('.min.', '.') + param(value, '&amp;') + '&amp;v=' + Date.now();
             timer && clearTimeout(timer);
             timer = setTimeout(function() {
-                demo.innerHTML = "";
                 if (el = document.getElementById('test-js')) {
                     el.parentNode.removeChild(el);
                 }

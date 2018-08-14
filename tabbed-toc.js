@@ -253,6 +253,9 @@
         container = el('div', '<h3 class="' + name + '-title">' + text.title + '</h3>', {
             'class': name,
             'id': name + ':' + hash
+        }),
+        loading = el('p', text.loading, {
+            'class': name + '-loading'
         });
 
     if (ad === true) {
@@ -339,9 +342,6 @@
             }
             if (!panels[term]) {
                 set_class(current, 'active loading');
-                var loading = el('p', text.loading, {
-                        'class': name + '-loading'
-                    });
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
                 load(url + '/feeds/posts/summary/-/' + encode(term) + param(extend(settings.query, {
@@ -479,21 +479,21 @@
         }
 
         if (_show()) {
-            if (!win['_' + hash + '_']) {
-                win['_' + hash + '_'] = function($) {
-                    $ = $.feed || {};
-                    var entry = $.entry || [];
-                    entry = entry[Math.floor(Math.random() * entry.length)];
-                    if (entry = list(entry)) {
-                        set_class(entry, 'ad');
-                        insert(ol, entry, ol.firstChild);
-                    }
-                };
-            }
+            win['_' + hash + '_'] = function($) {
+                $ = $.feed || {};
+                var entry = $.entry || [];
+                entry = entry[Math.floor(Math.random() * entry.length)];
+                if (entry = list(entry)) {
+                    set_class(entry, 'ad');
+                    insert(ol, entry, ol.firstChild);
+                }
+            };
             load('//www.blogger.com/feeds/298900102869691923/posts/summary' + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
                 'max-results': 100
-            })) + '&q=' + encode(term));
+            })) + '&q=' + encode(term.toLowerCase()));
+        } else {
+            delete win['_' + hash + '_'];
         }
 
         insert(container.children[2], el('h4', term, {
