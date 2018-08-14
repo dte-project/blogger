@@ -114,6 +114,14 @@
         return a;
     }
 
+    function canon(url, x) {
+        url = url.split(/[?&#]/)[0].replace(/\/+$/, "");
+        if (is_set(x)) {
+            url = url.replace(/\.[\w-]+$/, x ? '.' + x : "");
+        }
+        return url;
+    }
+
     function on(el, ev, fn) {
         el.addEventListener(ev, fn, false);
     }
@@ -160,11 +168,14 @@
         tabs_indexes = [],
         panels = {}, clicked,
         infinity = 9999,
+        loc = win.location,
         storage = win.localStorage,
         defaults = {
+            direction: 'ltr',
             hash: Date.now(),
-            url: location.protocol + '//' + location.host,
+            url: loc.protocol + '//' + loc.host,
             name: 'tabbed-toc',
+            css: 1,
             sort: 1,
             ad: true,
             active: 0,
@@ -246,12 +257,12 @@
     }
 
     var hash = settings.hash,
-        url = settings.url.split(/[?&#]/)[0].replace(/\/+$/, ""),
+        url = canon(settings.url),
         name = settings.name,
         ad = settings.ad,
         text = settings.text,
         container = el('div', '<h3 class="' + name + '-title">' + text.title + '</h3>', {
-            'class': name,
+            'class': name + ' ' + settings.direction,
             'id': name + ':' + hash
         }),
         loading = el('p', text.loading, {
@@ -263,7 +274,7 @@
     }
 
     // Allow to update settings through current URL query string
-    var settings_alt = query_eval(location.search);
+    var settings_alt = query_eval(loc.search);
     if (is_set(settings_alt[hash])) {
         delete settings_alt[hash].url; // but `url`
         settings = extend(settings, settings_alt[hash]);
@@ -502,7 +513,9 @@
     };
 
     function fire() {
-        load(script.src.split(/[?&#]/)[0].replace(/\.js$/, '.css'));
+        if (settings.css) {
+            load(canon(script.src, 'css'));
+        }
         load(url + '/feeds/posts/summary' + param(extend(settings.query, {
             'callback': '_' + hash,
             'max-results': 0

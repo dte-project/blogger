@@ -6,10 +6,14 @@
     <title>Tabbed TOC for Blogger</title>
     <style>body,html{margin:0;padding:0;background:#d5c38d;color:#000}body{font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;padding:2em}pre,textarea{cursor:auto;font:normal normal 12px/1.5 "Courier New",Courier,monospace;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;background:#333;border:2px solid #e0d19b;color:#fff;margin:0 0 2em;padding:1em;box-shadow:0 1px 3px rgba(0,0,0,.4);height:30em;width:49.5%;float:left;resize:vertical;overflow:auto}pre{float:right;white-space:pre-wrap;background:#aae09d;color:inherit;border-color:inherit}.tabbed-toc{clear:both}</style>
     <link href="favicon.ico" rel="shortcut icon">
-    <link href="tabbed-toc/224c19.min.css" rel="stylesheet">
+    <link href="tabbed-toc/224c19.css" rel="stylesheet">
   </head>
   <body spellcheck="false">
     <textarea id="settings">{
+
+  // `"ltr": for &ldquo;left to right&rdquo; site
+  // `"rtl": for &ldquo;right to left&rdquo; site
+  "direction": "ltr",
 
   // `1`: ascending
   // `-1`: descending
@@ -122,7 +126,7 @@
                 value.hash = 'test';
             }
             if (!value.url) {
-                value.url = '//dte-history.blogspot.com';
+                value.url = 'https://www.dte.web.id';
             }
             // value.ad = false;
             value.container = '#demo';

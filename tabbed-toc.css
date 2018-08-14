@@ -8,18 +8,29 @@
   border:1px solid;
 }
 
+.tabbed-toc.ltr {
+  direction:ltr;
+  text-align:left;
+}
+
+.tabbed-toc.rtl {
+  direction:rtl;
+  text-align:right;
+}
+
 .tabbed-toc a {text-decoration:none}
 
 .tabbed-toc-tabs,
 .tabbed-toc-panels {
   display:table-cell;
-  text-align:left;
+  text-align:inherit;
   vertical-align:top;
   overflow:hidden;
 }
 
 .tabbed-toc-tabs {width:12em}
-.tabbed-toc-panels {border-left:1px solid}
+.ltr .tabbed-toc-panels {border-left:1px solid}
+.rtl .tabbed-toc-panels {border-right:1px solid}
 
 .tabbed-toc-title {
   font:inherit;
@@ -64,7 +75,7 @@
   overflow:hidden;
 }
 
-.has-excerpt .tabbed-toc-panel li {padding:1em 1.25em}
+.has-excerpt .tabbed-toc-panel li {padding:1em 1.5em 1.5em}
 
 .tabbed-toc-panel .tabbed-toc-title {
   display:block;
@@ -99,22 +110,24 @@
   color:#f00;
   display:inline-block;
   vertical-align:baseline;
-  margin-left:.5em;
+  margin:0 .5em;
 }
 
 .has-excerpt .tabbed-toc-panel .tabbed-toc-title sup {
   line-height:1;
   font-size:.75em;
   vertical-align:top;
-  margin-left:0;
+  margin:0;
 }
 
 .tabbed-toc-panel .tabbed-toc-time {
   position:absolute;
   top:0;
-  right:0;
   font-weight:normal;
 }
+
+.ltr .tabbed-toc-panel .tabbed-toc-time {right:0}
+.rtl .tabbed-toc-panel .tabbed-toc-time {left:0}
 
 .has-excerpt .tabbed-toc-panel .tabbed-toc-time {
   position:static;
@@ -129,7 +142,12 @@
 .has-excerpt .tabbed-toc-panel .tabbed-toc-image {
   display:block;
   float:left;
-  margin:1em 1em .5em 0;
+  margin:1em 1em 0 0;
+}
+
+.has-excerpt.rtl .tabbed-toc-panel .tabbed-toc-image {
+  float:right;
+  margin:1em 0 0 1em;
 }
 
 .tabbed-toc-panel .tabbed-toc-image .img {background:rgba(0,0,0,.05)}
@@ -142,9 +160,13 @@
     display:block;
     width:auto;
   }
-  .tabbed-toc-panels {
-    border-left:0;
-    border-top:1px solid;
-  }
-  .tabbed-toc-tab {float:left}
+  .tabbed-toc-panels {border-top:1px solid}
+  .ltr .tabbed-toc-panels {border-left:0}
+  .rtl .tabbed-toc-panels {border-right:0}
+  .ltr .tabbed-toc-tab {float:left}
+  .rtl .tabbed-toc-tab {float:right}
+}
+
+@media (max-width:640px) {
+  .tabbed-toc-panel .tabbed-toc-time {display:none}
 }
