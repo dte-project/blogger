@@ -52,9 +52,9 @@
 
 .tabbed-toc-tab {
   display:block;
-  height:2.5em;
-  line-height:2.5em;
-  padding:0 1em;
+  height:3em;
+  line-height:3em;
+  padding:0 1.25em;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -75,33 +75,31 @@
   overflow:hidden;
 }
 
-.has-excerpt .tabbed-toc-panel li {padding:1em 1.5em 1.5em}
+.has-image .tabbed-toc-panel li {padding:1em}
+.tabbed-toc-panel .tabbed-toc-title {display:block}
 
-.tabbed-toc-panel .tabbed-toc-title {
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.has-excerpt .tabbed-toc-panel .tabbed-toc-title {
+.has-image .tabbed-toc-panel .tabbed-toc-title {
   font-size:1.25em;
   line-height:1.25em;
-  margin-bottom:.5em;
+  margin:-.25em 0 .5em;
 }
 
 .tabbed-toc-panel .tabbed-toc-title a,
 .tabbed-toc-panel .tabbed-toc-time {
   display:block;
-  padding:.5em 1em;
+  padding:.25em .75em;
   font-weight:bold;
   font-size:.9em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-.has-excerpt .tabbed-toc-panel .tabbed-toc-title a {
+.has-image .tabbed-toc-panel .tabbed-toc-title a {
   display:inline;
   font-weight:normal;
   padding:0;
+  white-space:normal;
 }
 
 .tabbed-toc-panel .tabbed-toc-title sup {
@@ -110,10 +108,10 @@
   color:#f00;
   display:inline-block;
   vertical-align:baseline;
-  margin:0 .5em;
+  margin:0 .25em;
 }
 
-.has-excerpt .tabbed-toc-panel .tabbed-toc-title sup {
+.has-image .tabbed-toc-panel .tabbed-toc-title sup {
   line-height:1;
   font-size:.75em;
   vertical-align:top;
@@ -124,30 +122,30 @@
   position:absolute;
   top:0;
   font-weight:normal;
+  pointer-events:none;
 }
 
 .ltr .tabbed-toc-panel .tabbed-toc-time {right:0}
 .rtl .tabbed-toc-panel .tabbed-toc-time {left:0}
 
-.has-excerpt .tabbed-toc-panel .tabbed-toc-time {
+.has-image .tabbed-toc-panel .tabbed-toc-time {
   position:static;
   padding:0;
   font-size:.75em;
   letter-spacing:.25em;
   text-transform:uppercase;
+  pointer-events:auto;
 }
 
-.tabbed-toc-panel .tabbed-toc-image {display:none}
-
-.has-excerpt .tabbed-toc-panel .tabbed-toc-image {
+.has-image .tabbed-toc-panel .tabbed-toc-image {
   display:block;
   float:left;
-  margin:1em 1em 0 0;
+  margin:0 1em 0 0;
 }
 
-.has-excerpt.rtl .tabbed-toc-panel .tabbed-toc-image {
+.has-image.rtl .tabbed-toc-panel .tabbed-toc-image {
   float:right;
-  margin:1em 0 0 1em;
+  margin:0 0 0 1em;
 }
 
 .tabbed-toc-panel .tabbed-toc-image .img {background:rgba(0,0,0,.05)}

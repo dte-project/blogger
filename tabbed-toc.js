@@ -96,7 +96,10 @@
         return out;
     }
 
-    function extend(a, b) {
+    function extend(a, b, copy) {
+        if (copy) {
+            a = JSON.parse(JSON.stringify(a));
+        }
         b = b || {};
         for (var i in b) {
             if (b[i] === null && is_set(a[i])) {
@@ -156,7 +159,8 @@
         el.parentNode.removeChild(el);
     }
 
-    var tabs = {},
+    var script = doc.currentScript || doc.getElementsByTagName('script').pop(),
+        tabs = {},
         tabs_indexes = [],
         panels = {}, clicked,
         infinity = 9999,
@@ -166,6 +170,7 @@
             direction: 'ltr',
             hash: Date.now(),
             url: loc.protocol + '//' + loc.host,
+            // id: 0,
             name: 'tabbed-toc',
             css: 1,
             sort: 1,
@@ -209,13 +214,12 @@
             },
             query: {
                 'alt': 'json-in-script',
-                'orderby': 'published'
+                'orderby': 'published',
+                'max-results': infinity,
+                'start-index': 1
             }
         },
         head = doc.head,
-        body = doc.body,
-        html = body.parentNode,
-        script = doc.currentScript || doc.getElementsByTagName('script').pop(),
         settings = extend(defaults, query_eval(script.src));
 
     function param(o, separator) {
@@ -266,7 +270,7 @@
     }
 
     var hash = settings.hash,
-        url = canon(settings.url),
+        url = settings.id || canon(settings.url),
         name = settings.name,
         ad = settings.ad,
         text = settings.text,
@@ -326,12 +330,11 @@
 
         $ = $.feed || {};
 
-        var entry = $.entry || [],
+        var sort = settings.sort,
+            entry = $.entry || [],
             category = $.category || [],
             entry_length = entry.length,
             category_length = category.length, i, j, k;
-
-        var sort = settings.sort;
 
         if (is_number(sort)) {
             sort = +sort;
@@ -365,9 +368,8 @@
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
                 load(blogger(url) + '/-/' + encode(term) + param(extend(settings.query, {
-                    'callback': '_' + (hash + 1),
-                    'max-results': infinity
-                })), function() {
+                    'callback': '_' + (hash + 1)
+                }, 1)), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
                     detach(loading);
@@ -425,7 +427,7 @@
 
         $ = $.feed || {};
 
-        var index = clicked ? clicked.id.split(':')[1].split('.')[1] : "",
+        var sort = settings.sort,
             term = clicked ? clicked.innerHTML : "",
             entry = $.entry || [],
             entry_length = entry.length,
@@ -436,8 +438,6 @@
             entry[i].$ = !!suffix;
             entry[i].title.$t += suffix;
         }
-
-        var sort = settings.sort;
 
         if (is_number(sort)) {
             sort = +sort;
@@ -473,16 +473,16 @@
                     break;
                 }
             }
-            str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
-            if (settings.date) {
-                str += '<p class="' + name + '-time"><time datetime="' + date + '">' + format(date, settings.date) + '</time></p>';
-            }
             if (size) {
                 var has_image = 'media$thumbnail' in current;
                 if (size === true) size = 80;
                 str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + '">';
                 str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(-c)?\//g, '/s' + size + '-c/') + '" style="display:block;width:' + size + 'px;height:' + size + 'px;">' : '<span class="img" style="display:block;width:' + size + 'px;height:' + size + 'px;">';
                 str += '</p>';
+            }
+            str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
+            if (settings.date) {
+                str += '<p class="' + name + '-time"><time datetime="' + date + '">' + format(date, settings.date) + '</time></p>';
             }
             if (excerpt) {
                 var summary = current.summary.$t.trim().replace(/<.*?>/g, "").replace(/[<>]/g, ""),
@@ -512,7 +512,7 @@
             load(blogger('298900102869691923') + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
                 'max-results': 21
-            })) + '&q=' + encode(term.toLowerCase()));
+            }, 1)) + '&q=' + encode(term.toLowerCase()));
         } else {
             delete win['_' + hash + '_'];
         }
@@ -522,14 +522,15 @@
     };
 
     function fire() {
-        if (settings.css) {
-            load(canon(script.src, 'css'));
+        var c = settings.container,
+            css = settings.css;
+        if (css) {
+            load(is_string(css) ? css : canon(script.src, 'css'));
         }
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + hash,
             'max-results': 0
-        })), function() {
-            var c = settings.container;
+        }, 1)), function() {
             if (c) {
                 c = doc.querySelector(c);
                 c && (c.innerHTML = ""), insert(c, container);

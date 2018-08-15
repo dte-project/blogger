@@ -45,8 +45,8 @@
 .tabbed-toc-panel li.ad {background:#e3edff}
 .tabbed-toc-panel li.ad:nth-child(even) {background:#fff}
 .tabbed-toc-panel .tabbed-toc-time {color:#666}
-.tabbed-toc:not(.has-excerpt) .tabbed-toc-title a:focus,
-.tabbed-toc:not(.has-excerpt) .tabbed-toc-title a:hover {
+.tabbed-toc:not(.has-image) .tabbed-toc-title a:focus,
+.tabbed-toc:not(.has-image) .tabbed-toc-title a:hover {
   background:#333;
   color:#fff;
 }
