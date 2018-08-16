@@ -123,11 +123,9 @@
             var script = document.createElement('script');
             script.id = 'test-js';
             if (!value.hash) {
-                value.hash = 'test';
+                value.hash = 1;
             }
-            if (!value.url) {
-                value.url = '298900102869691923';
-            }
+            value.id = '298900102869691923';
             // value.ad = false;
             value.container = '#demo';
             if (value.load === true) {

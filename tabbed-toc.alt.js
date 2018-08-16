@@ -96,25 +96,16 @@
         return out;
     }
 
-    function extend(a, b, copy) {
-        if (copy) {
-            a = JSON.parse(JSON.stringify(a));
-        }
+    function extend(a, b) {
         b = b || {};
-        for (var i in b) {
-            if (b[i] === null && is_set(a[i])) {
-                delete a[i];
-            } else if (is_object(b[i])) {
-                if (is_object(a[i])) {
-                    extend(a[i], b[i]);
-                } else {
-                    a[i] = b[i];
-                }
-            } else {
-                a[i] = b[i];
+        for (var i in a) {
+            if (!is_set(b[i])) {
+                b[i] = a[i];
+            } else if (is_object(a[i]) && is_object(b[i])) {
+                b[i] = extend(a[i], b[i]);
             }
         }
-        return a;
+        return b;
     }
 
     function on(el, ev, fn) {
@@ -177,12 +168,13 @@
             ad: true,
             active: 0,
             container: 0,
+            tab: '%Y %M+',
             date: '%D+, %D %M+ %Y %h:%m',
             excerpt: 0,
             image: 0,
             target: 0,
             load: 0,
-            recent: 7,
+            recent: 0,
             hide: [],
             text: {
                 title: 'Table of Content',
@@ -331,7 +323,11 @@
             'callback': '_' + hash,
             'max-results': 1,
             'start-index': $.feed.openSearch$totalResults.$t
-        }, 1)));
+        })), function() {
+            var active = settings.active;
+            active = tabs_indexes[active] || active;
+            tabs[active] && tabs[active].click();
+        });
     };
 
     win['_' + hash] = function($) {
@@ -345,20 +341,25 @@
             end = $.updated.$t,
             start = entry[0] && entry[0].published.$t || '1999',
             year_end = +end.split('-')[0],
-            year_start = +start.split('-')[0], i, j, k;
+            year_start = +start.split('-')[0],
+            m = 13, i, j, k;
 
         for (i = year_end; i >= year_start; --i) {
-            category.push({
-                term: i + ""
-            });
-            ++category_length;
+            while (m > 1) {
+                --m;
+                j = i + '-' + (m < 10 ? '0' + m : m);
+                category.push({
+                    id: j,
+                    term: format(j + '-01T00:00:00', settings.tab)
+                });
+                ++category_length;
+            }
+            m = 13;
         }
 
         if (is_number(sort)) {
             sort = +sort;
-            category = category.sort(function(a, b) {
-                return a.term.localeCompare(b.term);
-            });
+            category = category.sort();
             if (sort === -1) {
                 category = category.reverse();
             }
@@ -370,7 +371,7 @@
         function click(e) {
             clicked = this;
             var id = clicked.id.split(':')[1],
-                term = clicked.innerHTML,
+                term = clicked.getAttribute('j'),
                 parent = container.parentNode,
                 current = tabs[term];
             for (i in tabs) {
@@ -387,9 +388,9 @@
                 set_class(parent, name + '-loading');
                 load(blogger(url) + param(extend(settings.query, {
                     'callback': '_' + (hash + 1),
-                    'published-min': term + '-01-01T00:00:00',
-                    'published-max': term + '-11-30T59:59:59'
-                }, 1)), function() {
+                    'published-min': term + '-01T00:00:00',
+                    'published-max': term + '-30T59:59:59'
+                })), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
                     detach(loading);
@@ -415,7 +416,8 @@
         }));
 
         for (i = 0; i < category_length; ++i) {
-            var term = category[i].term;
+            var id = category[i].id,
+                term = category[i].term;
             if (settings.hide.indexOf(term) > -1) {
                 continue;
             }
@@ -423,10 +425,11 @@
                 'class': name + '-tab ' + name + '-tab:' + i,
                 'href': '#' + name + '-panel:' + hash + '.' + i,
                 'id': name + '-tab:' + hash + '.' + i,
+                'j': category[i].id,
                 'title': term
             });
             tabs_indexes.push(term);
-            tabs[term] = a;
+            tabs[id] = a;
             on(a, "click", click);
             insert(nav, a);
             if (i < category_length - 1) {
@@ -435,7 +438,7 @@
             insert(container.children[2], el('h4', term, {
                 'class': name + '-title'
             }));
-            insert(container.children[2], panels[term] = el('ol', "", {
+            insert(container.children[2], panels[id] = el('ol', "", {
                 'class': name + '-panel ' + name + '-panel:' + i + ' active',
                 'id': name + '-panel:' + hash + '.' + i
             }));
@@ -448,7 +451,7 @@
         $ = $.feed || {};
 
         var sort = settings.sort,
-            term = clicked ? clicked.innerHTML : "",
+            term = clicked ? clicked.getAttribute('j') : "",
             entry = $.entry || [],
             entry_length = entry.length,
             ol = panels[term], i, j, k;
@@ -531,8 +534,9 @@
             };
             load(blogger('298900102869691923') + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
-                'max-results': 21
-            }, 1)) + '&q=' + encode(term.toLowerCase()));
+                'max-results': 21,
+                'orderby': 'updated'
+            })) + '&q=' + encode(term.toLowerCase()));
         } else {
             delete win['_' + hash + '_'];
         }
@@ -550,7 +554,7 @@
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + (hash - 1),
             'max-results': 0
-        }, 1)), function() {
+        })), function() {
             if (c) {
                 c = doc.querySelector(c);
                 c && (c.innerHTML = ""), insert(c, container);
@@ -558,11 +562,6 @@
                 insert(script.parentNode, container, script);
             }
             reset_class(container.parentNode, name + '-loading');
-            var active = settings.active;
-            if (is_number(active)) {
-                active = tabs_indexes[active];
-            }
-            tabs[active] && tabs[active].click();
         });
     }
 

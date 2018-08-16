@@ -23,7 +23,7 @@
     }
 
     function is_object(x) {
-        return typeof x === "object";
+        return typeof x === "object" && x !== null;
     }
 
     function maybe_json(x) {
@@ -96,25 +96,16 @@
         return out;
     }
 
-    function extend(a, b, copy) {
-        if (copy) {
-            a = JSON.parse(JSON.stringify(a));
-        }
+    function extend(a, b) {
         b = b || {};
-        for (var i in b) {
-            if (b[i] === null && is_set(a[i])) {
-                delete a[i];
-            } else if (is_object(b[i])) {
-                if (is_object(a[i])) {
-                    extend(a[i], b[i]);
-                } else {
-                    a[i] = b[i];
-                }
-            } else {
-                a[i] = b[i];
+        for (var i in a) {
+            if (!is_set(b[i])) {
+                b[i] = a[i];
+            } else if (is_object(a[i]) && is_object(b[i])) {
+                b[i] = extend(a[i], b[i]);
             }
         }
-        return a;
+        return b;
     }
 
     function on(el, ev, fn) {
@@ -369,7 +360,7 @@
                 set_class(parent, name + '-loading');
                 load(blogger(url) + '/-/' + encode(term) + param(extend(settings.query, {
                     'callback': '_' + (hash + 1)
-                }, 1)), function() {
+                })), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
                     detach(loading);
@@ -511,8 +502,9 @@
             };
             load(blogger('298900102869691923') + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
-                'max-results': 21
-            }, 1)) + '&q=' + encode(term.toLowerCase()));
+                'max-results': 21,
+                'orderby': 'updated'
+            })) + '&q=' + encode(term.toLowerCase()));
         } else {
             delete win['_' + hash + '_'];
         }
@@ -530,7 +522,7 @@
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + hash,
             'max-results': 0
-        }, 1)), function() {
+        })), function() {
             if (c) {
                 c = doc.querySelector(c);
                 c && (c.innerHTML = ""), insert(c, container);
