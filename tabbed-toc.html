@@ -115,7 +115,7 @@
             .replace(/\/\*[\s\S]*?\*\//g, "")
             .replace(/^[ ]*\/\/.*/gm, "")
             .replace(/[ ]*\/\/[^"'\n]*$/gm, "")
-            .replace(/\s*,\s*[\]\}]/g, '}');
+            .replace(/\s*,\s*(?=[\]\}])/g, "");
         try {
             var src = url.replace(/^https?:/, "").replace(/\.html$/, '.min.js'), el;
             value = JSON.parse(value);

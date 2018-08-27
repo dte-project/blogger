@@ -467,8 +467,9 @@
             if (size) {
                 var has_image = 'media$thumbnail' in current;
                 if (size === true) size = 80;
+                if (is_number(size)) size = 's' + size + '-c';
                 str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + '">';
-                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(-c)?\//g, '/s' + size + '-c/') + '" style="display:block;width:' + size + 'px;height:' + size + 'px;">' : '<span class="img" style="display:block;width:' + size + 'px;height:' + size + 'px;">';
+                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + size + 'px;height:' + size + 'px;">' : '<span class="img" style="display:block;width:' + size + 'px;height:' + size + 'px;">';
                 str += '</p>';
             }
             str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
