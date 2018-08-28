@@ -1,0 +1,12 @@
+{
+  "manifest_version": 2,
+  "name": "Semantic HTML Post Content",
+  "version": "0.0",
+  "description": "Replace line break with paragraph.",
+  "content_scripts": [
+    {
+      "matches": ["*://*.blogger.com/*"],
+      "js": ["fix.min.js"]
+    }
+  ]
+}
