@@ -497,11 +497,21 @@
                 }
             }
             if (size) {
-                var has_image = 'media$thumbnail' in current;
+                var has_image = 'media$thumbnail' in current,
+                    w, h, r;
                 if (size === true) size = 80;
-                if (is_number(size)) size = 's' + size + '-c';
+                if (is_number(size)) {
+                    w = h = size + 'px';
+                    size = 's' + size + '-c';
+                } else if (r = /^s(\d+)(\-[cp])?$/.exec(size)) {
+                    w = r[1] + 'px';
+                    h = r[2] ? r[1] + 'px' : 'auto';
+                } else if (r = /^w(\d+)\-h(\d+)(\-[cp])?$/.exec(size)) {
+                    w = r[1] + 'px';
+                    h = r[2] + 'px';
+                }
                 str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + '">';
-                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + size + 'px;height:' + size + 'px;">' : '<span class="img" style="display:block;width:' + size + 'px;height:' + size + 'px;">';
+                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(\-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + w + ';height:' + h + ';">' : '<span class="img" style="display:block;width:' + w + ';height:' + h + ';">';
                 str += '</p>';
             }
             str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
