@@ -199,6 +199,11 @@ while (c = div.firstChild) {
 
 d.querySelector('button.blogg-primary').click();
 console.log('"' + d.querySelector('.titleField').value + '"');
+if (c = /postNum=(\d+)/.exec(w.location.hash)) {
+    var s = d.createElement('style');
+    s.innerHTML = '[__gwt_row="' + c[1] + '"]{background:#ff9}';
+    d.head.appendChild(s);
+}
 
 })(window, document);
 
