@@ -147,7 +147,7 @@
     }
 
     function detach(el) {
-        el.parentNode.removeChild(el);
+        el.parentNode && el.parentNode.removeChild(el);
     }
 
     var script = doc.currentScript || doc.getElementsByTagName('script').pop(),
@@ -168,7 +168,8 @@
             ad: true,
             active: 0,
             container: 0,
-            date: '%D+, %D %M+ %Y %h:%m',
+            // <https://en.wikipedia.org/wiki/Date_and_time_notation_in_the_United_States>
+            date: '%M+ %D, %Y %h:%m %?',
             excerpt: 0,
             image: 0,
             target: 0,
@@ -178,6 +179,7 @@
             text: {
                 title: 'Table of Content',
                 loading: 'Loading&hellip;',
+                midday: ['AM', 'PM'],
                 months: [
                     'January',
                     'February',
@@ -300,19 +302,23 @@
     function format(s, to) {
         var a = s.split('T'),
             date = a[0].split('-'),
-            time = a[1].split('+')[0].split(':');
+            time = a[1].split('+')[0].split(':'),
+            hour = +time[0],
+            hour_12 = hour % 12 || 12;
         var symbols = {
-            'M+': text.months[+date[1] - 1],
-            'D+': text.days[(new Date(s)).getDay()],
+            'M\\+': text.months[+date[1] - 1],
+            'D\\+': text.days[(new Date(s)).getDay()],
+            'h\\+': hour + "",
             'Y': date[0],
             'M': date[1],
             'D': date[2],
-            'h': time[0],
+            'h': hour_12 + "",
             'm': time[1],
-            's': Math.floor(+time[2]) + ""
+            's': Math.floor(+time[2]) + "",
+            '\\?': text.midday[hour_12 < 12 || hour_12 === 24 ? 0 : 1]
         }, i;
         for (i in symbols) {
-            to = to.replace(new RegExp('%' + i.replace('+', '\\+'), 'g'), symbols[i]);
+            to = to.replace(new RegExp('%' + i, 'g'), symbols[i]);
         }
         return to;
     }
@@ -350,9 +356,9 @@
                 reset_class(tabs[i], 'active');
             }
             for (i in panels) {
+                reset_class(panels[i], 'active');
                 panels[i].style.display = 'none';
                 panels[i].previousSibling.style.display = 'none';
-                reset_class(panels[i], 'active');
             }
             if (!panels[term].$) {
                 set_class(current, 'active loading');
@@ -370,9 +376,9 @@
                 });
             }
             set_class(current, 'active');
+            set_class(panels[term], 'active');
             panels[term].style.display = "";
             panels[term].previousSibling.style.display = "";
-            set_class(panels[term], 'active');
             e.preventDefault();
         }
 
@@ -407,7 +413,7 @@
                 'class': name + '-title'
             }));
             insert(container.children[2], panels[term] = el('ol', "", {
-                'class': name + '-panel ' + name + '-panel:' + i + ' active',
+                'class': name + '-panel ' + name + '-panel:' + i,
                 'id': name + '-panel:' + hash + '.' + i
             }));
         }

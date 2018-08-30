@@ -33,12 +33,14 @@
   // `%Y`: year
   // `%M`: month
   // `%D`: day
-  // `%h`: hour
+  // `%h`: hour 12
   // `%m`: minute
   // `%s`: second
   // `%M+`: month name
   // `%D+`: day name
-  "date": "%D+, %D %M+ %Y %h:%m",
+  // `%h+`: hour 24
+  // `%?`: &ldquo;AM&rdquo; or &ldquo;PM&rdquo;
+  "date": "%M+ %D, %Y %h:%m %?",
 
   // set to `false` or `0` to hide the excerpt
   "excerpt": false,
