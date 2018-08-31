@@ -1,4 +1,4 @@
-/*! Tabbed TOC for Blogger V2 <https://dte-project.github.io/blogger/tabbed-toc.html> */
+/*! Accordion TOC for Blogger V2 <https://dte-project.github.io/blogger/stacked-toc.html> */
 
 (function(win, doc) {
 
@@ -112,6 +112,30 @@
         el.addEventListener(ev, fn, false);
     }
 
+    /*
+    function on_transition_end(el, fn) {
+        var transitions = {
+                'transition':'transitionend',
+                'OTransition':'otransitionend',
+                'MozTransition':'transitionend',
+                'WebkitTransition':'webkitTransitionEnd'
+            }, i, j;
+        for (i in transitions) {
+            if (is_set(el.style[i])) {
+                j = transitions[i];
+                break;
+            }
+        }
+        if (j) {
+            on(el, j, function() {
+                fn(el);
+            });
+        } else {
+            fn(el);
+        }
+    }
+    */
+
     function off(el, ev, fn) {
         el.removeEventListener(ev, fn);
     }
@@ -142,6 +166,10 @@
         while (current = name.shift()) el.classList.remove(current);
     }
 
+    function get_class(el, name) {
+        return el.classList.contains(name);
+    }
+
     function insert(container, el, before) {
         container.insertBefore(el, before);
     }
@@ -151,8 +179,8 @@
     }
 
     var script = doc.currentScript || doc.getElementsByTagName('script').pop(),
-        tabs = {},
-        tabs_indexes = [],
+        headers = {},
+        headers_indexes = [],
         panels = {}, clicked,
         infinity = 9999,
         loc = win.location,
@@ -162,10 +190,11 @@
             hash: Date.now(),
             url: loc.protocol + '//' + loc.host,
             // id: 0,
-            name: 'tabbed-toc',
+            name: 'stacked-toc',
             css: 1,
             sort: 1,
             ad: true,
+            toggle: true, // make it possible to collapse all panels
             active: 0,
             container: 0,
             // <https://en.wikipedia.org/wiki/Date_and_time_notation_in_the_United_States>
@@ -351,21 +380,21 @@
             var id = clicked.id.split(':')[1],
                 term = clicked.innerHTML,
                 parent = container.parentNode,
-                current = tabs[term],
+                current = headers[term].parentNode,
                 current_panel = panels[term];
-            for (i in tabs) {
+            for (i in headers) {
                 if (i === term) continue;
-                reset_class(tabs[i], 'active');
+                reset_class(headers[i].parentNode, 'active');
             }
             for (i in panels) {
                 if (i === term) continue;
                 reset_class(panels[i], 'active');
-                panels[i].style.display = 'none';
-                panels[i].previousSibling.style.display = 'none';
+                panels[i].style.height = 0;
             }
             if (!current_panel.$) {
                 set_class(current, 'active loading');
-                insert(container.children[2], loading);
+                insert(current_panel, loading);
+                current_panel.style.height = current_panel.scrollHeight + 'px';
                 set_class(parent, name + '-loading');
                 load(blogger(url) + '/-/' + encode(term) + param(extend(settings.query, {
                     'callback': '_' + (hash + 1)
@@ -373,26 +402,25 @@
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
                     detach(loading);
+                    current_panel.style.height = current_panel.scrollHeight + 'px';
                 }, {
                     'class': name + '-js',
                     'id': name + '-js:' + id
                 });
             }
-            set_class(current, 'active');
-            set_class(current_panel, 'active');
-            current_panel.style.display = "";
-            current_panel.previousSibling.style.display = "";
+            if (!get_class(current, 'active')) {
+                set_class(current, 'active');
+                set_class(current_panel, 'active');
+                current_panel.style.height = current_panel.scrollHeight + 'px';
+            } else if (settings.toggle && !get_class(current, 'loading')) {
+                reset_class(current, 'active');
+                reset_class(current_panel, 'active');
+                current_panel.style.height = 0;
+            }
             e.preventDefault();
         }
 
-        var nav = el('nav', "", {
-                'class': name + '-tabs p'
-            }), a;
-
-        insert(container, nav);
-        insert(container, el('section', "", {
-            'class': name + '-panels p'
-        }));
+        var a, h4, ol;
 
         for (i = 0; i < category_length; ++i) {
             var term = category[i].term;
@@ -400,25 +428,29 @@
                 continue;
             }
             a = el('a', term, {
-                'class': name + '-tab ' + name + '-tab:' + i,
                 'href': canon(settings.url) + '/search/label/' + encode(term),
-                'id': name + '-tab:' + hash + '.' + i,
                 'title': term
             });
-            tabs_indexes.push(term);
-            tabs[term] = a;
-            on(a, "click", click);
-            insert(nav, a);
-            if (i < category_length - 1) {
-                insert(nav, doc.createTextNode(' ')); // insert space
-            }
-            insert(container.children[2], el('h4', term, {
-                'class': name + '-title'
-            }));
-            insert(container.children[2], panels[term] = el('ol', "", {
+            h4 = el('h4', "", {
+                'class': name + '-header ' + name + '-header:' + i + ' ' + name + '-title',
+                'id': name + '-header:' + hash + '.' + i
+            });
+            ol = el('ol', "", {
                 'class': name + '-panel ' + name + '-panel:' + i,
-                'id': name + '-panel:' + hash + '.' + i
-            }));
+                'id': name + '-panel:' + hash + '.' + i,
+                'style': 'overflow:hidden;'
+            });
+            /*
+            on_transition_end(ol, function($) {
+                $.offsetHeight > 0 && ($.style.height = "");
+            });
+            */
+            headers_indexes.push(term);
+            headers[term] = a;
+            on(a, "click", click);
+            insert(h4, a);
+            insert(container, h4);
+            insert(container, panels[term] = ol);
         }
 
     };
@@ -518,6 +550,9 @@
                 if (entry = list(entry)) {
                     set_class(entry, 'ad');
                     insert(ol, entry, ol.firstChild);
+                    if (get_class(ol, 'active')) {
+                        ol.style.height = ol.scrollHeight + 'px';
+                    }
                 }
             };
             load(blogger('298900102869691923') + param(extend(settings.query, {
@@ -552,9 +587,9 @@
             reset_class(container.parentNode, name + '-loading');
             var active = settings.active;
             if (is_number(active)) {
-                active = tabs_indexes[active];
+                active = headers_indexes[active];
             }
-            tabs[active] && tabs[active].click();
+            headers[active] && headers[active].click();
         });
     }
 

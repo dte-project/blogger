@@ -379,16 +379,19 @@
             var id = clicked.id.split(':')[1],
                 term = clicked.getAttribute('j'),
                 parent = container.parentNode,
-                current = tabs[term];
+                current = tabs[term],
+                current_panel = panels[term];
             for (i in tabs) {
+                if (i === term) continue;
                 reset_class(tabs[i], 'active');
             }
             for (i in panels) {
+                if (i === term) continue;
                 reset_class(panels[i], 'active');
                 panels[i].style.display = 'none';
                 panels[i].previousSibling.style.display = 'none';
             }
-            if (!panels[term].$) {
+            if (!current_panel.$) {
                 set_class(current, 'active loading');
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
@@ -406,9 +409,9 @@
                 });
             }
             set_class(current, 'active');
-            set_class(panels[term], 'active');
-            panels[term].style.display = "";
-            panels[term].previousSibling.style.display = "";
+            set_class(current_panel, 'active');
+            current_panel.style.display = "";
+            current_panel.previousSibling.style.display = "";
             e.preventDefault();
         }
 
