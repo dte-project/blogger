@@ -1,6 +1,6 @@
 (function(w, d) {
 
-var IGNORE = 'h[1-6]|kbd|math|pre|script|style|textarea',
+var IGNORE = 'h[1-6]|math|pre|script|style|textarea',
     I = 'a|abbr|acronym|b|basefont|bdo|big|blink|button|cite|code|del|dfn|em|font|i|img|input|ins|kbd|listing|mar(?:k|quee)|nextid|nobr|q|r[pt]|ruby|s|samp|select|small|spacer|span|strike|strong|su[bp]|svg|textarea|time|tt|u|var|w?br|xm',
     B = 'blockquote|div|p',
     AUTO = 'dd|div|(?:fig)?caption|li|td',
