@@ -456,10 +456,8 @@
                     w = r[1] + 'px';
                     h = r[2] + 'px';
                 }
-                str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + ' loading">';
-                var remove = 'this.removeAttribute(\'',
-                    remove = ',' + remove + 'onload\'),' + remove + 'onerror\')';
-                str += has_image ? '<img class="loading" onload="this.parentNode.classList.remove(\'loading\')' + remove + ';" onerror="this.parentNode.classList.add(\'error\')' + remove + ';" alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(\-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + w + ';height:' + h + ';">' : '<span class="img" style="display:block;width:' + w + ';height:' + h + ';">';
+                str += '<p class="' + name + '-image ' + (has_image ? 'loading' : 'no-image') + '">';
+                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(\-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + w + ';height:' + h + ';">' : '<span class="img" style="display:block;width:' + w + ';height:' + h + ';">';
                 str += '</p>';
             }
             str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
@@ -479,6 +477,20 @@
 
         for (i = 0; i < entry_length; ++i) {
             insert(ol, list(entry[i]));
+        }
+
+        if (size) {
+            var img = ol.getElementsByTagName('img'),
+                img_error = function() {
+                    set_class(this.parentNode, 'error');
+                },
+                img_load = function() {
+                    reset_class(this.parentNode, 'loading');
+                };
+            for (i = 0, j = img.length; i < j; ++i) {
+                on(img[i], "error", img_error);
+                on(img[i], "load", img_load);
+            }
         }
 
         if (_show()) {
