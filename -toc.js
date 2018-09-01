@@ -32,7 +32,7 @@ function change() {
         if (x = document.getElementById('test-css')) {
             x.parentNode.removeChild(x);
         }
-        if (y = skins.value || skin) {
+        if (y = skins.value) {
             var link = document.createElement('link');
             link.href = (z = skin_url.replace('%{name}%', y)) + '?v=' + Date.now();
             link.rel = 'stylesheet';

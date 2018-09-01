@@ -35,8 +35,6 @@
 .stacked-toc-panel + .stacked-toc-header {margin-top:1px}
 .stacked-toc-panel {padding:0 .5em}
 .stacked-toc-panel.active {margin:.5em 0}
-.stacked-toc-panel li:first-child,
-.stacked-toc-panel li:last-child {border:0}
 .stacked-toc-panel li:nth-child(odd) {background-color:rgba(0,0,0,.05)}
 .stacked-toc-panel li.ad {background-color:rgba(75,139,244,.15)}
 .stacked-toc-panel li.stacked-toc-loading {background-color:transparent}
