@@ -6,10 +6,6 @@
   box-shadow:0 1px 3px rgba(0,0,0,.4);
   overflow:hidden;
 }
-.tabbed-toc-loading .tabbed-toc-tab:not(.loading) {
-  pointer-events:none;
-  opacity:.5;
-}
 .tabbed-toc-tabs {
   background:#224c19;
   color:#ccc;

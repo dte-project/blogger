@@ -4,10 +4,6 @@
   color:#666;
   overflow:visible;
 }
-.stacked-toc-loading .stacked-toc-header:not(.loading) a {
-  pointer-events:none;
-  opacity:.5;
-}
 .stacked-toc-header a,
 .stacked-toc-header a:focus,
 .stacked-toc-header a:hover,

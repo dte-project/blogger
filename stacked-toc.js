@@ -112,7 +112,7 @@
     var script = doc.currentScript || doc.getElementsByTagName('script').pop(),
         headers = {},
         headers_indexes = [],
-        panels = {}, clicked,
+        panels = {},
         infinity = 9999,
         loc = win.location,
         storage = win.localStorage,
@@ -314,9 +314,8 @@
         }
 
         function click(e) {
-            clicked = this;
-            var id = clicked.id.split(':')[1],
-                term = clicked.innerHTML,
+            var id = this.id.split(':')[1],
+                term = this.title,
                 parent = container.parentNode,
                 current = headers[term].parentNode,
                 current_panel = panels[term];
@@ -407,7 +406,9 @@
         $ = $.feed || {};
 
         var sort = settings.sort,
-            term = clicked ? clicked.innerHTML : "",
+            term = (($.link.find(function($) {
+                return $.rel === "alternate";
+            }) || {}).href || "").split('/').pop(),
             entry = $.entry || [],
             entry_length = entry.length,
             ol = panels[term], i, j, k;
@@ -445,13 +446,10 @@
         function list(current) {
             if (!current) return;
             var date = current.published.$t,
-                str = "", url;
-            for (j = 0, k = current.link.length; j < k; ++j) {
-                if (current.link[j].rel === "alternate") {
-                    url = current.link[j].href;
-                    break;
-                }
-            }
+                url = (current.link.find(function($) {
+                    return $.rel === "alternate";
+                }) || {}).href;
+                str = "";
             if (size) {
                 var has_image = 'media$thumbnail' in current,
                     w, h, r;

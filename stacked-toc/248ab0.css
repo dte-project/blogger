@@ -7,10 +7,6 @@
   box-shadow:0 1px 2px rgba(0,0,0,.5);
   overflow:hidden;
 }
-.stacked-toc-loading .stacked-toc-header:not(.loading) a {
-  pointer-events:none;
-  opacity:.5;
-}
 .stacked-toc a {color:#5687f8}
 .stacked-toc a:focus,
 .stacked-toc a:hover {color:#89b2fa}
