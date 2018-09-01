@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Stacked TOC for Blogger</title>
-    <style>body,html{margin:0;padding:0;background:#eee url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABHNCSVQICAgIfAhkiAAAAF96VFh0UmF3IHByb2ZpbGUgdHlwZSBBUFAxAAAImeNKT81LLcpMVigoyk/LzEnlUgADYxMuE0sTS6NEAwMDCwMIMDQwMDYEkkZAtjlUKNEABZiYm6UBoblZspkpiM8FAE+6FWgbLdiMAAAAJElEQVQYlWNgYGDgYCAC4FLEgU8RVk0c+CQJWUfYBLxuwOkLADaoAHH3ZuuCAAAAAElFTkSuQmCC) repeat 50% 50%;color:#000}body{font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;padding:2em}pre,textarea{cursor:auto;font:normal normal 12px/1.5 "Courier New",Courier,monospace;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;background:#333;border:2px solid #fff;color:#fff;margin:0 0 2em;padding:1em;box-shadow:0 1px 3px rgba(0,0,0,.4);height:30em;width:49.5%;float:left;resize:vertical;overflow:auto}pre{float:right;white-space:pre-wrap;background:#e0d3a0;color:inherit;border-color:inherit}</style>
+    <link href="-toc.min.css" rel="stylesheet">
+    <style>body,html{background:#eee url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABHNCSVQICAgIfAhkiAAAAF96VFh0UmF3IHByb2ZpbGUgdHlwZSBBUFAxAAAImeNKT81LLcpMVigoyk/LzEnlUgADYxMuE0sTS6NEAwMDCwMIMDQwMDYEkkZAtjlUKNEABZiYm6UBoblZspkpiM8FAE+6FWgbLdiMAAAAJElEQVQYlWNgYGDgYCAC4FLEgU8RVk0c+CQJWUfYBLxuwOkLADaoAHH3ZuuCAAAAAElFTkSuQmCC) repeat 50% 50%}select,textarea{background:#f5f5f5}</style>
     <link href="favicon.ico" rel="shortcut icon">
   </head>
   <body spellcheck="false">
@@ -15,7 +16,8 @@
         <option value="">None</option>
       </select>
     </p>
-    <textarea id="settings">{
+    <p>
+      <textarea id="settings">{
 
   // `"ltr": for &ldquo;left to right&rdquo; site
   // `"rtl": for &ldquo;right to left&rdquo; site
@@ -30,6 +32,11 @@
   // `1`: will activate the second tab on load
   // `"Autumn"`: will activate a tab with label &ldquo;Autumn&rdquo;
   "active": 0,
+
+  // `true`: will close the active panel when you click on it or in other panels
+  // `false`: will close the active panel only when you click on other panels
+  // `-1`: will close the active panel only when you click on it (disable connections)
+  "toggle": true,
 
   // `false` to put the widget right before the `&lt;script&gt;` tag or
   // `"#toc-container"` to put the widget in `&lt;div id="toc-container"&gt;&lt;/div&gt;`
@@ -69,7 +76,6 @@
   // example: `["Autumn", "Spring", "Winter"]`
   "hide": [],
 
-  /*
   "text": {
     "title": "Table of Content",
     "loading": "Loading&hellip;",
@@ -98,83 +104,11 @@
     ],
     "recent": " &lt;sup&gt;New!&lt;/sup&gt;"
   }
-  */
 
 }</textarea>
-    <pre id="results" contenteditable></pre>
-    <div id="demo"></div>
-    <script>
-    function param(o, separator) {
-        var s = [], i;
-        for (i in o) {
-            if (typeof o[i] === "object") {
-                o[i] = JSON.stringify(o[i]);
-            }
-            s.push(encodeURIComponent(i) + '=' + encodeURIComponent(o[i]));
-        }
-        return '?' + s.join(separator || '&');
-    }
-    var search = location.search,
-        skin = /[?&]skin=(.*?)(?:&|$)/.exec(search),
-        skins = document.getElementById('skins'),
-        settings = document.getElementById('settings'),
-        results = document.getElementById('results'),
-        demo = document.getElementById('demo'),
-        url = location.href.split(/[?&#]/)[0], timer, skin_url;
-    skin = skin && skin[1] || "";
-    skin_url = url.replace(/^https?:/, "").replace(/\.html$/, '/%{name}%.min.css');
-    function change() {
-        var x, y, z;
-        if (x = document.getElementById('test-css')) {
-            x.parentNode.removeChild(x);
-        }
-        if (y = this.value || skin) {
-            var css = document.createElement('link');
-            css.href = (z = skin_url.replace('%{name}%', y)) + '?v=' + Date.now();
-            css.rel = 'stylesheet';
-            css.id = 'test-css';
-            document.head.appendChild(css);
-        }
-        return z;
-    }
-    skins.onchange = change;
-    function update() {
-        value = (settings.value.trim() || '{}')
-            .replace(/\/\*[\s\S]*?\*\//g, "")
-            .replace(/^[ ]*\/\/.*/gm, "")
-            .replace(/[ ]*\/\/[^"'\n]*$/gm, "")
-            .replace(/\s*,\s*(?=[\]\}])/g, "");
-        try {
-            var src = url.replace(/^https?:/, "").replace(/\.html$/, '.min.js'), el;
-            value = JSON.parse(value);
-            results.innerHTML = '&lt;link href="' + change.apply(skins) + '" rel="stylesheet"&gt;\n&lt;script src="' + src + param(value, '&amp;amp;') + '"&gt;&lt;/script&gt;';
-            var script = document.createElement('script');
-            script.id = 'test-js';
-            if (!value.hash) {
-                value.hash = 1;
-            }
-            value.id = '298900102869691923';
-            // value.ad = false;
-            value.container = '#demo';
-            if (value.load === true) {
-                value.load = 0;
-            }
-            script.src = src.replace('.min.', '.') + param(value) + '&v=' + Date.now();
-            timer && clearTimeout(timer);
-            timer = setTimeout(function() {
-                if (el = document.getElementById('test-js')) {
-                    el.parentNode.removeChild(el);
-                }
-                document.body.appendChild(script);
-            }, 1000);
-        } catch (e) {
-            results.innerHTML = e;
-        }
-    }
-    settings.onkeyup = update;
-    settings.onpaste = update;
-    settings.oncut = update;
-    update();
-    </script>
+      <textarea id="results"></textarea>
+    </p>
+    <div id="views"></div>
+    <script src="-toc.min.js"></script>
   </body>
 </html>

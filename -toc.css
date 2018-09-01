@@ -1,0 +1,59 @@
+html,body {
+  margin:0;
+  padding:0;
+  background:#fff;
+  color:#000;
+}
+
+body {
+  font:normal normal 12px/1.4 Helmet,FreeSans,sans-serif;
+  padding:2em;
+}
+
+p {margin:0 0 1em}
+
+p::after {
+  content:"";
+  display:table;
+  clear:both;
+}
+
+select,
+textarea {
+  margin:0;
+  padding:0;
+  cursor:auto;
+  font:inherit;
+  font-family:"Courier New",Courier,monospace;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  box-sizing:border-box;
+  display:block;
+  background:#fff;
+  border:1px dotted;
+}
+
+select {
+  width:12em;
+  padding:.25em;
+  cursor:pointer;
+}
+
+textarea {
+  padding:0 .25em;
+  height:20em;
+  width:49.5%;
+  float:left;
+  resize:vertical;
+  overflow:auto;
+}
+
+textarea + textarea {float:right}
+
+@media (max-width:600px) {
+  textarea {
+    float:none;
+    width:100%;
+  }
+  textarea + textarea {margin-top:1em}
+}

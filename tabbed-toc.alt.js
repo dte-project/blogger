@@ -1,5 +1,8 @@
 /*! Tabbed TOC for Blogger V2 <https://dte-project.github.io/blogger/tabbed-toc.html> */
 
+/*! <https://github.com/tovic/query-string-parser> */
+!function(e,n){function t(e,n){function t(e){return decodeURIComponent(e)}function r(e){return void 0!==e}function l(e){return"string"==typeof e}function s(e){return l(e)&&""!==e.trim()?'""'===e||"[]"===e||"{}"===e||'"'===e[0]&&'"'===e.slice(-1)||"["===e[0]&&"]"===e.slice(-1)||"{"===e[0]&&"}"===e.slice(-1):!1}function a(e){if(l(e)){if("true"===e)return!0;if("false"===e)return!1;if("null"===e)return null;if("'"===e.slice(0,1)&&"'"===e.slice(-1))return e.slice(1,-1);if(/^-?(\d*\.)?\d+$/.test(e)&&e>=Number.MIN_SAFE_INTEGER&&e<=Number.MAX_SAFE_INTEGER)return+e;if(s(e))try{return JSON.parse(e)}catch(n){}}return e}function c(e,n,t){for(var r,l=n.split("["),s=0,a=l.length;a-1>s;++s)r=l[s].replace(/\]$/,""),e=e[r]||(e[r]={});e[l[s].replace(/\]$/,"")]=t}var i={},o=e.replace(/^.*?\?/,"");return""===o?i:(o.split(/&(?:amp;)?/).forEach(function(e){var l=e.split("="),s=t(l[0]),o=r(l[1])?t(l[1]):!0;o=!r(n)||n?a(o):o,"]"===s.slice(-1)?c(i,s,o):i[s]=o}),i)}e[n]=t}(window,"q2o");
+
 (function(win, doc) {
 
     function encode(x) {
@@ -23,77 +26,7 @@
     }
 
     function is_object(x) {
-        return typeof x === "object";
-    }
-
-    function maybe_json(x) {
-        if (!is_string(x) || x.trim() === "") {
-            return false;
-        }
-        return (
-            // Maybe an empty string, array or object
-            x === '""' ||
-            x === '[]' ||
-            x === '{}' ||
-            // Maybe an encoded JSON string
-            x[0] === '"' && x.slice(-1) === '"' ||
-            // Maybe a numeric array
-            x[0] === '[' && x.slice(-1) === ']' ||
-            // Maybe an associative array
-            x[0] === '{' && x.slice(-1) === '}'
-        );
-    }
-
-    function str_eval(x) {
-        if (is_string(x)) {
-            if (x === 'true') {
-                return true;
-            } else if (x === 'false') {
-                return false;
-            } else if (x === 'null') {
-                return null;
-            } else if (x.slice(0, 1) === "'" && x.slice(-1) === "'") {
-                return x.slice(1, -1);
-            } else if (/^-?(\d*\.)?\d+$/.test(x) && x >= Number.MIN_SAFE_INTEGER && x <= Number.MAX_SAFE_INTEGER) {
-                return +x;
-            } else if (maybe_json(x)) {
-                try {
-                    return JSON.parse(x);
-                } catch (e) {}
-            }
-        }
-        return x;
-    }
-
-    function query(o, props, value) {
-        var path = props.split('['), k;
-        for (var i = 0, j = path.length; i < j - 1; ++i) {
-            k = path[i].replace(/\]$/, "");
-            o = o[k] || (o[k] = {});
-        }
-        o[path[i].replace(/\]$/, "")] = value;
-    }
-
-    function query_eval(x, eval) {
-        var out = {},
-            part = x.replace(/^.*?\?/, "");
-        if (part === "") {
-            return out;
-        }
-        part.split(/&(?:amp;)?/).forEach(function(v) {
-            var a = v.split('='),
-                key = decode(a[0]),
-                value = is_set(a[1]) ? decode(a[1]) : true;
-            value = !is_set(eval) || eval ? str_eval(value) : value;
-            // `a[b]=c`
-            if (key.slice(-1) === ']') {
-                query(out, key, value);
-            // `a=b`
-            } else {
-                out[key] = value;
-            }
-        });
-        return out;
+        return x !== null && typeof x === "object";
     }
 
     function extend(a, b) {
@@ -214,7 +147,7 @@
             }
         },
         head = doc.head,
-        settings = extend(defaults, query_eval(script.src));
+        settings = extend(defaults, q2o(script.src));
 
     function param(o, separator) {
         var s = [], i;
@@ -281,7 +214,7 @@
     }
 
     // Allow to update settings through current URL query string
-    var settings_alt = query_eval(loc.search);
+    var settings_alt = q2o(loc.search);
     if (is_set(settings_alt[hash])) {
         delete settings_alt[hash].url; // but `url`
         settings = extend(settings, settings_alt[hash]);
@@ -392,7 +325,8 @@
                 panels[i].previousSibling.style.display = 'none';
             }
             if (!current_panel.$) {
-                set_class(current, 'active loading');
+                set_class(current, 'loading');
+                set_class(current_panel, 'loading');
                 insert(container.children[2], loading);
                 set_class(parent, name + '-loading');
                 load(blogger(url) + param(extend(settings.query, {
@@ -402,6 +336,7 @@
                 })), function() {
                     reset_class(parent, name + '-loading');
                     reset_class(current, 'loading');
+                    reset_class(current_panel, 'loading');
                     detach(loading);
                 }, {
                     'class': name + '-js',
@@ -424,10 +359,12 @@
             'class': name + '-panels p'
         }));
 
+        var hides = Object.values(settings.hide);
+
         for (i = 0; i < category_length; ++i) {
             var id = category[i].id,
                 term = category[i].term;
-            if (settings.hide.indexOf(term) > -1) {
+            if (hides.indexOf(term) > -1) {
                 continue;
             }
             a = el('a', term, {
@@ -519,8 +456,10 @@
                     w = r[1] + 'px';
                     h = r[2] + 'px';
                 }
-                str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + '">';
-                str += has_image ? '<img alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(\-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + w + ';height:' + h + ';">' : '<span class="img" style="display:block;width:' + w + ';height:' + h + ';">';
+                str += '<p class="' + name + '-image' + (has_image ? "" : ' no-image') + ' loading">';
+                var remove = 'this.removeAttribute(\'',
+                    remove = ',' + remove + 'onload\'),' + remove + 'onerror\')';
+                str += has_image ? '<img class="loading" onload="this.parentNode.classList.remove(\'loading\')' + remove + ';" onerror="this.parentNode.classList.add(\'error\')' + remove + ';" alt="" src="' + current.media$thumbnail.url.replace(/\/s\d+(\-c)?\//g, '/' + size + '/') + '" style="display:block;width:' + w + ';height:' + h + ';">' : '<span class="img" style="display:block;width:' + w + ';height:' + h + ';">';
                 str += '</p>';
             }
             str += '<h5 class="' + name + '-title"><a href="' + url + '"' + (target ? ' target="' + target + '"' : "") + '>' + current.title.$t + '</a></h5>';
