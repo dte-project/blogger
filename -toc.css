@@ -30,7 +30,8 @@ textarea {
   box-sizing:border-box;
   display:block;
   background:#fff;
-  border:1px dotted;
+  border:2px solid;
+  border-color:rgba(0,0,0,.4) rgba(255,255,255,.4) rgba(255,255,255,.4) rgba(0,0,0,.4);
 }
 
 select {
@@ -40,7 +41,7 @@ select {
 }
 
 textarea {
-  padding:0 .25em;
+  padding:.25em .35em;
   height:20em;
   width:49.5%;
   float:left;
