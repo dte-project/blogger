@@ -375,7 +375,7 @@
             entry_length = entry.length,
             ol = panels[term], i, j, k;
 
-        if (!get_class(ol, 'active')) {
+        if (entry_length && !get_class(ol, 'active')) {
             tabs[term].click();
         }
 
