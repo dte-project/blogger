@@ -51,6 +51,7 @@
 .stacked-toc li {padding:0 1.25em}
 .stacked-toc li {margin-bottom:.5em}
 .stacked-toc li:first-child {margin-top:.5em}
+.stacked-toc li.ad .stacked-toc-title a {text-decoration:underline}
 .stacked-toc-time {
   position:static;
   padding:0;
@@ -72,4 +73,3 @@
   text-transform:none;
 }
 .stacked-toc-excerpt {font-size:.8em}
-.stacked-toc-panel + .stacked-toc-header {border:0}

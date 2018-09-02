@@ -1,7 +1,7 @@
 /*! Accordion TOC for Blogger V2 <https://dte-project.github.io/blogger/stacked-toc.html> */
 
 /* <https://github.com/tovic/query-string-parser> */
-!function(e,n){function t(e,n){function t(e){return decodeURIComponent(e)}function r(e){return void 0!==e}function l(e){return"string"==typeof e}function s(e){return l(e)&&""!==e.trim()?'""'===e||"[]"===e||"{}"===e||'"'===e[0]&&'"'===e.slice(-1)||"["===e[0]&&"]"===e.slice(-1)||"{"===e[0]&&"}"===e.slice(-1):!1}function a(e){if(l(e)){if("true"===e)return!0;if("false"===e)return!1;if("null"===e)return null;if("'"===e.slice(0,1)&&"'"===e.slice(-1))return e.slice(1,-1);if(/^-?(\d*\.)?\d+$/.test(e)&&e>=Number.MIN_SAFE_INTEGER&&e<=Number.MAX_SAFE_INTEGER)return+e;if(s(e))try{return JSON.parse(e)}catch(n){}}return e}function c(e,n,t){for(var r,l=n.split("["),s=0,a=l.length;a-1>s;++s)r=l[s].replace(/\]$/,""),e=e[r]||(e[r]={});e[l[s].replace(/\]$/,"")]=t}var i={},o=e.replace(/^.*?\?/,"");return""===o?i:(o.split(/&(?:amp;)?/).forEach(function(e){var l=e.split("="),s=t(l[0]),o=r(l[1])?t(l[1]):!0;o=!r(n)||n?a(o):o,"]"===s.slice(-1)?c(i,s,o):i[s]=o}),i)}e[n]=t}(window,"q2o");
+!function(n,r){function t(n,r){function t(n){return decodeURIComponent(n)}function e(n){return void 0!==n}function i(n){return"string"==typeof n}function u(n){return i(n)&&""!==n.trim()?'""'===n||"[]"===n||"{}"===n||'"'===n[0]&&'"'===n.slice(-1)||"["===n[0]&&"]"===n.slice(-1)||"{"===n[0]&&"}"===n.slice(-1):!1}function o(n){if(i(n)){if("true"===n)return!0;if("false"===n)return!1;if("null"===n)return null;if("'"===n.slice(0,1)&&"'"===n.slice(-1))return n.slice(1,-1);if(/^-?(\d*\.)?\d+$/.test(n))return+n;if(u(n))try{return JSON.parse(n)}catch(r){}}return n}function f(n,r,t){for(var e,i=r.split("["),u=0,o=i.length;o-1>u;++u)e=i[u].replace(/\]$/,""),n=n[e]||(n[e]={});n[i[u].replace(/\]$/,"")]=t}var c={},l=n.replace(/^.*?\?/,"");return""===l?c:(l.split(/&(?:amp;)?/).forEach(function(n){var i=n.split("="),u=t(i[0]),l=e(i[1])?t(i[1]):!0;l=!e(r)||r?o(l):l,"]"===u.slice(-1)?f(c,u,l):c[u]=l}),c)}n[r]=t}(window,"q2o");
 
 (function(win, doc) {
 
@@ -102,7 +102,7 @@
     }
 
     function insert(container, el, before) {
-        container.insertBefore(el, before);
+        el && container.insertBefore(el, before);
     }
 
     function detach(el) {
@@ -129,7 +129,7 @@
             active: 0,
             container: 0,
             // <https://en.wikipedia.org/wiki/Date_and_time_notation_in_the_United_States>
-            date: '%M+ %D, %Y %h:%m %?',
+            date: '%M~% %D%, %Y% %h%:%m% %?%',
             excerpt: 0,
             image: 0,
             target: 0,
@@ -212,11 +212,11 @@
             $.onreadystatechange = function() {
                 if ($.readyState === "loaded" || $.readyState === "complete") {
                     $.onreadystatechange = null;
-                    fn($);
+                    fn && fn($);
                 }
             };
         } else {
-            on($, "load", fn);
+            fn && on($, "load", fn);
         }
         insert(head, $, head.firstChild);
         return $;
@@ -266,9 +266,9 @@
             hour = +time[0],
             hour_12 = hour % 12 || 12;
         var symbols = {
-            'M\\+': text.months[+date[1] - 1],
-            'D\\+': text.days[(new Date(s)).getDay()],
-            'h\\+': hour + "",
+            'M~': text.months[+date[1] - 1],
+            'D~': text.days[(new Date(s)).getDay()],
+            'h~': hour + "",
             'Y': date[0],
             'M': date[1],
             'D': date[2],
@@ -278,7 +278,7 @@
             '\\?': text.midday[hour_12 < 12 || hour_12 === 24 ? 0 : 1]
         }, i;
         for (i in symbols) {
-            to = to.replace(new RegExp('%' + i, 'g'), symbols[i]);
+            to = to.replace(/\\%/g, '&#37;').replace(new RegExp('%' + i + '%', 'g'), symbols[i]);
         }
         return to;
     }
@@ -314,7 +314,7 @@
         }
 
         function click(e) {
-            var id = this.id.split(':')[1],
+            var id = this.parentNode.id.split(':')[1],
                 term = this.title,
                 parent = container.parentNode,
                 current = headers[term].parentNode,
@@ -413,8 +413,12 @@
             entry_length = entry.length,
             ol = panels[term], i, j, k;
 
+        if (!get_class(ol, 'active')) {
+            headers[term].click();
+        }
+
         for (i = 0; i < entry_length; ++i) {
-            var suffix = i <= settings.recent ? text.recent : "";
+            var suffix = i < settings.recent ? text.recent : "";
             entry[i].$ = !!suffix;
             entry[i].title.$t += suffix;
         }
@@ -450,6 +454,7 @@
                     return $.rel === "alternate";
                 }) || {}).href;
                 str = "";
+            if (!url) return;
             if (size) {
                 var has_image = 'media$thumbnail' in current,
                     w, h, r;
@@ -473,7 +478,7 @@
                 str += '<p class="' + name + '-time"><time datetime="' + date + '">' + format(date, settings.date) + '</time></p>';
             }
             if (excerpt) {
-                var summary = current.summary.$t.trim().replace(/<.*?>/g, "").replace(/[<>]/g, ""),
+                var summary = current.summary.$t.replace(/<.*?>/g, "").replace(/[<>]/g, "").trim(),
                     has_excerpt = summary.length;
                 if (excerpt === true) excerpt = 200;
                 str += '<p class="' + name + '-excerpt' + (has_excerpt ? "" : ' no-excerpt') + '">' + summary.slice(0, excerpt) + (has_excerpt > excerpt ? '&hellip;' : "") + '</p>';
@@ -519,8 +524,6 @@
                 'max-results': 21,
                 'orderby': 'updated'
             })) + '&q=' + encode(term.toLowerCase()));
-        } else {
-            delete win['_' + hash + '_'];
         }
 
         panels[term].$ = true;
@@ -528,10 +531,17 @@
     };
 
     function fire() {
+        if (!script.id) {
+            script.id = name + '-js';
+        }
+        set_class(script, name + '-js');
         var c = settings.container,
             css = settings.css;
-        if (css) {
-            load(is_string(css) ? css : canon(script.src, 'css'));
+        if (css && !doc.getElementById(name + '-css')) {
+            load(is_string(css) ? css : canon(script.src, 'css'), 0, {
+                'class': name + '-css',
+                'id': name + '-css'
+            });
         }
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + hash,

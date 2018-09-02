@@ -28,11 +28,10 @@
   background-image:-moz-linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.15));
   background-image:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.15));
   color:#fff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.5),0 1px 1px rgba(0,0,0,.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.25),0 1px 1px rgba(0,0,0,.5);
   z-index:4;
   /* cursor:text; */
 }
 .stacked-toc-time {color:#777}
 .stacked-toc-panel li {box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -1px 0 rgba(0,0,0,.25)}
 .stacked-toc-panel li.ad {background:#3e3e2e}
-.stacked-toc-panel + .stacked-toc-header {border:0}

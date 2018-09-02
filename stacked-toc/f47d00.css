@@ -9,7 +9,7 @@
 .stacked-toc-header a:hover,
 .stacked-toc-header a:visited,
 .stacked-toc-header.active a {color:#fff}
-.stacked-toc .stacked-toc-header {
+.stacked-toc-header {
   line-height:2em;
   height:2em;
   background:#666 none repeat-x 0 0;
