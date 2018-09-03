@@ -59,8 +59,8 @@ function update() {
         results.value = (z ? '<link href="' + z.replace(/\.css$/, '.min.css') + '" rel="stylesheet">\n' : "") + (css ? '<style>\n' + css + '\n</style>\n' : "") + '<scr' + 'ipt src="' + src.replace(/\.js$/, '.min.js') + o2q(value, '&amp;', 1, true) + '"></scr' + 'ipt>';
         var script = document.createElement('script');
         script.id = 'test-js';
-        if (!value.hash) {
-            value.hash = 1;
+        if (!value.i) {
+            value.i = 1;
         }
         value.id = '"298900102869691923"';
         // value.ad = false;

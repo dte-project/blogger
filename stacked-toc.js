@@ -109,7 +109,8 @@
         el.parentNode && el.parentNode.removeChild(el);
     }
 
-    var script = doc.currentScript || doc.getElementsByTagName('script').pop(),
+    var q2o = win.q2o,
+        script = doc.currentScript || doc.getElementsByTagName('script').pop(),
         headers = {},
         headers_indexes = [],
         panels = {},
@@ -117,8 +118,8 @@
         loc = win.location,
         storage = win.localStorage,
         defaults = {
+            i: Date.now(),
             direction: 'ltr',
-            hash: Date.now(),
             url: loc.protocol + '//' + loc.host,
             // id: 0,
             name: 'stacked-toc',
@@ -222,7 +223,7 @@
         return $;
     }
 
-    var hash = settings.hash,
+    var hash = settings.i,
         url = settings.id || canon(settings.url),
         name = settings.name,
         ad = settings.ad,
@@ -507,18 +508,6 @@
         }
 
         if (_show()) {
-            win['_' + hash + '_'] = function($) {
-                $ = $.feed || {};
-                var entry = $.entry || [];
-                entry = entry[Math.floor(Math.random() * entry.length)];
-                if (entry = list(entry)) {
-                    set_class(entry, 'ad');
-                    insert(ol, entry, ol.firstChild);
-                    if (get_class(ol, 'active')) {
-                        ol.style.height = ol.scrollHeight + 'px';
-                    }
-                }
-            };
             load(blogger('298900102869691923') + param(extend(settings.query, {
                 'callback': '_' + hash + '_',
                 'max-results': 21,
@@ -528,6 +517,19 @@
 
         panels[term].$ = true;
 
+    };
+
+    win['_' + hash + '_'] = function($) {
+        $ = $.feed || {};
+        var entry = $.entry || [];
+        entry = entry[Math.floor(Math.random() * entry.length)];
+        if (entry = list(entry)) {
+            set_class(entry, 'ad');
+            insert(ol, entry, ol.firstChild);
+            if (get_class(ol, 'active')) {
+                ol.style.height = ol.scrollHeight + 'px';
+            }
+        }
     };
 
     function fire() {
