@@ -49,7 +49,11 @@
 .comic-width,
 .comic-height {
   min-height:5em;
+  -webkit-transition:all .5s ease;
+  -moz-transition:all .5s ease;
   transition:all .5s ease;
+  -webkit-transition-property:width,height;
+  -moz-transition-property:width,height;
   transition-property:width,height;
 }
 .comic-ads img,
@@ -70,7 +74,12 @@
   max-height:none;
   opacity:1;
   visibility:visible;
+  /* to fade-in after container resize, we need a transition delay as long as the resize transition duration */
+  -webkit-transition:all 1s ease .5s;
+  -moz-transition:all 1s ease .5s;
   transition:all 1s ease .5s;
+  -webkit-transition-property:opacity,visibility;
+  -moz-transition-property:opacity,visibility;
   transition-property:opacity,visibility;
 }
 .comic.loading {cursor:progress}

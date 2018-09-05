@@ -239,7 +239,7 @@
             if (min > begin) {
                 s += '<a href="' + fn(begin) + '" title="' + first + '" rel="prev">' + begin + '</a>';
                 if (min > begin + 1) {
-                    s += ' <span>&#x2026;</span>';
+                    s += ' <span>&hellip;</span>';
                 }
             }
             for (i = min; i <= max; ++i) {
@@ -251,7 +251,7 @@
             }
             if (max < end) {
                 if (max < end - 1) {
-                    s += ' <span>&#x2026;</span>';
+                    s += ' <span>&hellip;</span>';
                 }
                 s += ' <a href="' + fn(end) + '" title="' + last + '" rel="next">' + end + '</a>';
             }
@@ -338,7 +338,7 @@
                 detach(loading);
             });
             set_class(container, 'loading');
-            insert(container, loading);
+            insert(container, loading, controls);
             insert(view_sizer, img);
         }
     }
