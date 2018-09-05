@@ -100,8 +100,8 @@
             text: {
                 loading: 'Loading&hellip;',
                 first: 'First',
-                next: 'Next',
                 previous: 'Previous',
+                next: 'Next',
                 last: 'Last',
                 current: 'Page %i% of %i~%',
                 enter: 'Read on&hellip;',
@@ -152,8 +152,7 @@
     var hash = settings.i,
         H = settings.hash,
         name = settings.name,
-        ad = settings.ad,
-        text = settings.text;
+        ad = settings.ad;
 
     if (ad === true) {
         ad = 3;
@@ -165,7 +164,9 @@
         settings = extend(settings, settings_alt[hash]);
     }
 
-    var find = source.querySelectorAll(settings.find),
+    var H = settings.hash,
+        text = settings.text,
+        find = source.querySelectorAll(settings.find),
         size = settings.image,
         direction = settings.direction,
         chunk = settings.chunk,
