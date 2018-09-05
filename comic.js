@@ -309,7 +309,8 @@
             view_sizer.innerHTML = "";
         }
         load(blogger('298900102869691923') + '?alt=json-in-script&max-results=0&callback=_' + hash, function() {
-            container.style.width = view_sizer.offsetWidth + 'px';
+            var w = view_sizer.offsetWidth;
+            container.style.width = w ? w + 'px' : '100%';
             view.style.height = "";
         });
     }
