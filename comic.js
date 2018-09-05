@@ -407,15 +407,14 @@
             entry_length = entry.length,
             ul = el('ul', "", {
                 'class': name + '-ads'
-            }), i, j, s;
+            }),
+            ss = ' style="display:block;width:80px;height:80px;">',
+            i, j, s;
         if (!entry_length) return;
         for (i = 0; i < ad; ++i) {
             if (i === ad) break;
             j = entry[i];
-            s = "";
-            if ('media$thumbnail' in j) {
-                s = '<img alt="" src="' + j.media$thumbnail.url.replace(/\/s\d+(-c)?\//, '/s80-c/') + '" width="80" height="80" style="width:80px;height:80px;">';
-            }
+            s = 'media$thumbnail' in j ? '<img alt="" src="' + j.media$thumbnail.url.replace(/\/s\d+(-c)?\//, '/s80-c/') + '" width="80" height="80"' + ss : '<span class="img"' + ss + '</span>';
             var url = (j.link.find(function($) {
                 return $.rel === "alternate";
             }) || {}).href;

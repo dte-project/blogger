@@ -172,11 +172,14 @@
   margin:0;
   font-size:.8em;
 }
-.ltr .comic-ads img {
+.comic-ads .img {background:rgba(0,0,0,.05)}
+.ltr .comic-ads img,
+.ltr .comic-ads .img {
   float:left;
   margin-right:1em;
 }
-.rtl .comic-ads img {
+.rtl .comic-ads img,
+.rtl .comic-ads .img {
   float:right;
   margin-left:1em;
 }
