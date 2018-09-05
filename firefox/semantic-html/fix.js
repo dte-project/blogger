@@ -180,6 +180,8 @@ function blogger(text) {
     text = text.replace(/<code class="javascript">/g, '<code class="js">');
     text = text.replace(/<code class="html">/g, '<code class="xml">');
     text = text.replace(/ class="numbered"/g, ' class="source"');
+    text = text.replace(/\bTemplate?\b/g, 'Tema');
+    text = text.replace(/\btemplate?\b/g, 'tema');
     // end: my blog specific markup
     return text;
 }
