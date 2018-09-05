@@ -89,12 +89,12 @@
 
     var q2o = win.q2o,
         script = doc.currentScript || doc.getElementsByTagName('script').pop(),
+        loc = win.location,
+        storage = win.localStorage,
         tabs = {},
         tabs_indexes = [],
         panels = {},
         infinity = 9999,
-        loc = win.location,
-        storage = win.localStorage,
         defaults = {
             i: Date.now(),
             direction: 'ltr',

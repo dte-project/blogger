@@ -1,0 +1,15 @@
+.comic {
+  background:#fff;
+  color:#444;
+  box-shadow:0 1px 5px rgba(0,0,0,.5);
+}
+.comic-controls a,
+.comic-controls b,
+.comic-controls span {
+  background:#009;
+  color:#fff;
+}
+.comic-controls p > span a:focus,
+.comic-controls p > span a:hover {background:#00a}
+.comic-controls p > span b {background:#444}
+.comic-controls p > span span {color:#444}

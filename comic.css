@@ -1,0 +1,173 @@
+.comic {
+  font:inherit;
+  line-height:1.5;
+  width:100%;
+  margin-right:auto;
+  margin-left:auto;
+  padding:4px;
+  position:relative;
+  -webkit-box-sizing:padding-box;
+  -moz-box-sizing:padding-box;
+  box-sizing:padding-box;
+}
+.comic-loading {
+  position:absolute;
+  top:0;
+  left:0;
+  padding:1em;
+  display:none;
+}
+.comic blockquote,
+.comic h1,
+.comic h2,
+.comic h3,
+.comic h4,
+.comic h5,
+.comic h6,
+.comic ol,
+.comic p,
+.comic pre,
+.comic table,
+.comic ul {margin:.5em 0 0}
+.comic blockquote:first-child,
+.comic h1:first-child,
+.comic h2:first-child,
+.comic h3:first-child,
+.comic h4:first-child,
+.comic h5:first-child,
+.comic h6:first-child,
+.comic ol:first-child,
+.comic p:first-child,
+.comic pre:first-child,
+.comic table:first-child,
+.comic ul:first-child {margin-top:0}
+.comic ol,
+.comic ul {margin-left:1.5em}
+.comic ol {list-style-type:decimal}
+.comic ul {list-style-type:square}
+.comic li {list-style:inherit}
+.comic-width,
+.comic-height {
+  min-height:5em;
+  transition:all .5s ease;
+  transition-property:width,height;
+}
+.comic-ads img,
+.comic-image img {
+  display:block;
+  margin:0 auto;
+  padding:0;
+  border:0;
+  outline:0;
+  background:none;
+  box-shadow:none;
+  border-radius:0;
+  width:auto;
+  height:auto;
+  min-width:0;
+  min-height:0;
+  max-width:none;
+  max-height:none;
+  opacity:1;
+  visibility:visible;
+  transition:all 1s ease .5s;
+  transition-property:opacity,visibility;
+}
+.comic.loading {cursor:progress}
+.comic.loading .comic-image {background:transparent url('data:image/gif;base64,R0lGODlhEgAEAKEAAH9/fwAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJDwACACwAAAAAEgAEAAACB5SPqcvtrwoAIfkECQ8AAgAsAAAAAAQABAAAAgSEjwkFACH5BAkPAAIALAAAAAALAAQAAAIMjCMJC4fKXBKsnVkLACH5BAkPAAIALAAAAAASAAQAAAIRjCN5mOCwkojt0Xnkg1l1sRUAIfkECQ8AAgAsAAAAABIABAAAAhGEIRkbKRwOUsxBaStdeDdfAAAh+QQJDwACACwHAAAACwAEAAACDIQhGRuHylwSrJ1ZCwAh+QQFDwACACwOAAAABAAEAAACBISPCQUAOw==') no-repeat 50% 50%}
+.comic.loading .comic-image img {
+  opacity:0;
+  visibility:hidden;
+}
+.comic-content {
+  padding:1em 1.5em;
+  display:none;
+}
+.comic.page-0 .comic-content {display:block}
+.comic.page-0 .comic-content:empty {display:none}
+.comic-image,
+.comic-content {margin-bottom:4px}
+.comic-controls p {margin:0}
+.comic-controls::after {
+  content:"";
+  display:table;
+  clear:both;
+}
+.comic-controls a,
+.comic-controls b,
+.comic-controls span {
+  display:block;
+  font:inherit;
+  height:2em;
+  line-height:2em;
+  padding:0 .75em;
+  text-decoration:none;
+}
+.ltr .comic-controls a,
+.ltr .comic-controls b,
+.ltr .comic-controls span {
+  float:left;
+  margin-right:4px;
+}
+.rtl .comic-controls a,
+.rtl .comic-controls b,
+.rtl .comic-controls span {
+  float:right;
+  margin-left:4px;
+}
+.ltr .comic-controls p > span,
+.rtl .comic-controls p > span {
+  background:none;
+  padding:0;
+  margin:0;
+}
+.comic-controls h3 {
+  font:inherit;
+  margin:0;
+  padding:0 .65em;
+  line-height:2em;
+  height:2em;
+}
+.ltr .comic-controls h3 {float:right}
+.rtl .comic-controls h3 {float:left}
+.comic-controls p > span a:focus,
+.comic-controls p > span a:hover {text-decoration:none}
+.comic-controls p > span b {
+  cursor:default;
+  cursor:not-allowed;
+}
+.comic-controls p > span span {background:none}
+.comic .comic-ads,
+.comic .comic-ads li {
+  margin:0;
+  padding:0;
+  list-style:none;
+  overflow:hidden;
+}
+.comic .comic-ads {padding:.5em 0}
+.comic img + .comic-ads {margin-top:4px}
+.comic .comic-ads li {padding:.5em 1em}
+.comic-ads h3 {
+  font:inherit;
+  margin:-.5em 0 0;
+}
+.comic-ads h3 a {
+  display:block;
+  position:relative;
+  z-index:4;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.comic-ads p {
+  margin:0;
+  font-size:.8em;
+}
+.ltr .comic-ads img {
+  float:left;
+  margin-right:1em;
+}
+.rtl .comic-ads img {
+  float:right;
+  margin-left:1em;
+}
