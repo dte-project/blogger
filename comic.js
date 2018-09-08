@@ -82,8 +82,9 @@
     var q2o = win.q2o,
         script = doc.currentScript || doc.getElementsByTagName('script').pop(),
         loc = win.location,
+        fn = Date.now(),
         defaults = {
-            i: Date.now(),
+            i: fn,
             hash: '!page=%i%',
             direction: 'ltr',
             name: 'comic',
@@ -150,7 +151,6 @@
     }
 
     var hash = settings.i,
-        H = settings.hash,
         name = settings.name,
         ad = settings.ad;
 
@@ -308,7 +308,7 @@
         if (over) {
             view_sizer.innerHTML = "";
         }
-        load(blogger('298900102869691923') + '?alt=json-in-script&max-results=0&callback=_' + hash, function() {
+        load(blogger('298900102869691923') + '?alt=json-in-script&max-results=0&callback=_' + fn, function() {
             var w = view_sizer.offsetWidth;
             container.style.width = w ? w + 'px' : '100%';
             view.style.height = "";
@@ -401,7 +401,7 @@
         }
     });
 
-    win['_' + (hash + 1)] = function($) {
+    win['_' + (fn + 1)] = function($) {
         $ = $.feed || {};
         var entry = $.entry || [],
             entry_length = entry.length,
@@ -429,10 +429,10 @@
         detach(loading);
     };
 
-    win['_' + hash] = function($) {
+    win['_' + fn] = function($) {
         $ = $.feed || {};
         var i = random(1, (+$.openSearch$totalResults.$t - ad));
-        load(blogger('298900102869691923') + '?alt=json-in-script&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (hash + 1));
+        load(blogger('298900102869691923') + '?alt=json-in-script&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (fn + 1));
     };
 
     if (!script.id) {

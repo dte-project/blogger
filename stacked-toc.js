@@ -117,8 +117,9 @@
         headers_indexes = [],
         panels = {},
         infinity = 9999,
+        fn = Date.now(),
         defaults = {
-            i: Date.now(),
+            i: fn,
             direction: 'ltr',
             url: loc.protocol + '//' + loc.host,
             // id: 0,
@@ -284,7 +285,7 @@
         return to;
     }
 
-    win['_' + hash] = function($) {
+    win['_' + fn] = function($) {
 
         $ = $.feed || {};
 
@@ -342,7 +343,7 @@
                 set_class(parent, name + '-loading');
                 insert(container, loading, current_panel);
                 load(blogger(url) + '/-/' + encode(term) + param(extend(settings.query, {
-                    'callback': '_' + (hash + 1)
+                    'callback': '_' + (fn + 1)
                 })), function() {
                     reset_class(current, 'loading');
                     reset_class(current_panel, 'loading');
@@ -402,7 +403,7 @@
 
     };
 
-    win['_' + (hash + 1)] = function($) {
+    win['_' + (fn + 1)] = function($) {
 
         $ = $.feed || {};
 
@@ -509,7 +510,7 @@
 
         if (_show()) {
             load(blogger('298900102869691923') + param(extend(settings.query, {
-                'callback': '_' + hash + '_',
+                'callback': '_' + fn + '_',
                 'max-results': 21,
                 'orderby': 'updated'
             })) + '&q=' + encode(term.toLowerCase()));
@@ -519,7 +520,7 @@
 
     };
 
-    win['_' + hash + '_'] = function($) {
+    win['_' + fn + '_'] = function($) {
         $ = $.feed || {};
         var entry = $.entry || [];
         entry = entry[Math.floor(Math.random() * entry.length)];
@@ -546,7 +547,7 @@
             });
         }
         load(blogger(url) + param(extend(settings.query, {
-            'callback': '_' + hash,
+            'callback': '_' + fn,
             'max-results': 0
         })), function() {
             if (c) {
