@@ -210,7 +210,7 @@
     // <http://salman-w.blogspot.com/2014/04/stackoverflow-like-pagination.html>
     function pager(current, count, chunk, kin, fn, first, previous, next, last) {
         var begin = 1,
-            end = +Math.ceil(count / chunk),
+            end = Math.ceil(count / chunk),
             s = "",
             i, min, max;
         if (end === 1) {
@@ -383,7 +383,7 @@
         } else {
             page_set(i - 1);
             pager_set(i);
-            insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', +Math.ceil(images_length / chunk))), controls.firstChild);
+            insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', Math.ceil(images_length / chunk))), controls.firstChild);
         }
         container.className = classes + ' page-' + i;
     } set();
