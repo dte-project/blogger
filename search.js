@@ -256,13 +256,12 @@
 
     function fit() {
         if (settings.container || !container.parentNode) return;
-        var rect = source.getBoundingClientRect(),
-            T = rect.top,
-            L = rect.left,
-            W = rect.width,
-            H = rect.height;
+        var T = source.offsetTop,
+            L = source.offsetLeft,
+            W = source.offsetWidth,
+            H = source.offsetHeight;
         set_class(container, name + '-float');
-        container.style.cssText = 'background-color:' + get_css('background-color') + ';color:' + get_css('color') + ';position:absolute;z-index:9999;top:' + (T + H) + 'px;left:' + rect.left + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
+        container.style.cssText = 'background-color:' + get_css('background-color') + ';color:' + get_css('color') + ';position:absolute;z-index:9999;top:' + (T + H) + 'px;left:' + L + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
     }
 
     on(win, "resize", fit);
