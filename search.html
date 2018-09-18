@@ -26,6 +26,11 @@
         </div>
       </div>
     </main>
-    <script src="search.js?i=1&amp;id=&quot;298900102869691923&quot;"></script>
+    <script>
+    function myHookFn() {
+        console.log([arguments[0], this, arguments]);
+    }
+    </script>
+    <script src="search.js?i=1&amp;id=&quot;298900102869691923&quot;&amp;e=myHookFn"></script>
   </body>
 </html>

@@ -101,8 +101,10 @@
         <option value="">None</option>
       </select>
     </p>
-    <script src="comic.js?i=1&amp;save=false"></script>
     <script>
+    function myHookFn() {
+        console.log([arguments[0], this, arguments]);
+    }
     function change_skin(value) {
         var link = document.createElement('link'), s;
         link.href = 'comic/' + value + '.css';
@@ -118,5 +120,6 @@
         }
     } change_skin('000000');
     </script>
+    <script src="comic.js?i=1&amp;save=false&amp;e=myHookFn"></script>
   </body>
 </html>

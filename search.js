@@ -180,7 +180,16 @@
     var hash = settings.i,
         url = settings.id || canon(settings.url),
         name = settings.name,
-        ad = settings.ad;
+        ad = settings.ad,
+        event = settings.e;
+
+    event = event && win[event];
+
+    function _hook(target, type, args) {
+        args = args || [];
+        args.unshift(type);
+        typeof event === "function" && event.apply(target, args);
+    }
 
     if (ad === true) {
         ad = 3;
@@ -255,7 +264,7 @@
         return win.getComputedStyle(doc.body).getPropertyValue(prop);
     }
 
-    function fit() {
+    function fit(e) {
         if (settings.container || !container.parentNode) return;
         var rect = source.getBoundingClientRect(),
             T = rect.top,
@@ -264,6 +273,7 @@
             H = rect.height;
         set_class(container, name + '-float');
         container.style.cssText = 'background-color:' + get_css('background-color') + ';color:' + get_css('color') + ';position:fixed;z-index:9999;top:' + (T + H) + 'px;left:' + L + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
+        _hook(container, e && e.type || 'fit', [rect]);
     }
 
     on(win, "scroll", fit);
@@ -345,9 +355,11 @@
             var img = ol.getElementsByTagName('img'),
                 img_error = function() {
                     set_class(this.parentNode, 'error');
+                    _hook(this, 'error.asset', [this.src]);
                 },
                 img_load = function() {
                     reset_class(this.parentNode, 'loading');
+                    _hook(this, 'load.asset', [this.src]);
                 };
             for (i = 0, j = img.length; i < j; ++i) {
                 on(img[i], "error", img_error);
@@ -373,6 +385,7 @@
             set_class(entry, 'ad');
             insert(ol, entry, ol.firstChild);
         }
+        _hook(entry, 'load.ad', [$]);
     };
 
     if (!script.id) {
@@ -382,7 +395,9 @@
     var c = settings.container,
         css = settings.css;
     if (css && !doc.getElementById(name + '-css')) {
-        load(is_string(css) ? css : canon(script.src, 'css'), 0, {
+        load(is_string(css) ? css : canon(script.src, 'css'), function() {
+            _hook(this, 'load.asset', [this.href]);
+        }, {
             'class': name + '-css',
             'id': name + '-css'
         });
@@ -424,6 +439,7 @@
         detach(div);
         var parent = container.parentNode;
         set_class(parent, name + '-loading');
+        _hook(source, 'search', [q, i, !!(caches[q] && caches[q][i])]);
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + fn,
             'max-results': chunk,
@@ -435,7 +451,7 @@
                 caches[q] = {};
             }
             var c = ol.innerHTML;
-            caches[q][start] = [ol.children.length, c];
+            caches[q][i] = [ol.children.length, c];
             search_cache(q, i);
         });
     }
@@ -502,5 +518,7 @@
         search_submit.call(source);
         prevent(e);
     });
+
+    _hook(container, 'ready', [settings]);
 
 })(window, document);

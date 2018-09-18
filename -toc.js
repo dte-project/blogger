@@ -2,6 +2,11 @@
 !function(e,n){function t(e,n,t,l){function r(e){return encodeURIComponent(e)}function s(e){return null!==e&&"object"==typeof e}function a(e){return e===!0?"true":e===!1?"false":null===e?"null":s(e)?JSON.stringify(e):e+""}function c(e,n,t,l){t=t||0;var a,i,o,u=[],p=n?"%5D":"";for(a in e)i=r(a),o=e[a],s(o)&&l>t?Object.assign(u,c(o,n+i+p+"%5B",t+1,l)):u[n+i+p]=o;return u}t=t||1;var i,o,u=[],p=c(e,"",0,t);for(i in p)o=p[i],(o!==!1||l)&&(o=o!==!0?"="+r(a(o)):"",u.push(i+o));return u.length?"?"+u.join(n||"&"):""}e[n]=t}(window,"o2q");
 
 /*! ... */
+
+function myHookFn() {
+    console.log([arguments[0], this, arguments]);
+}
+
 (function(window, document) {
 
 var search = location.search,
@@ -62,6 +67,7 @@ function update() {
         if (!value.i) {
             value.i = 1;
         }
+        value.e = 'myHookFn';
         value.id = '"298900102869691923"';
         // value.ad = false;
         value.container = '#views';

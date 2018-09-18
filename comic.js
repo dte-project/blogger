@@ -152,7 +152,16 @@
 
     var hash = settings.i,
         name = settings.name,
-        ad = settings.ad;
+        ad = settings.ad,
+        event = settings.e;
+
+    event = event && win[event];
+
+    function _hook(target, type, args) {
+        args = args || [];
+        args.unshift(type);
+        typeof event === "function" && event.apply(target, args);
+    }
 
     if (ad === true) {
         ad = 3;
@@ -334,10 +343,12 @@
                     container.style.width = view_sizer.offsetWidth + 'px';
                     view.style.height = view_sizer.offsetHeight + 'px';
                 }
+                _hook(this, 'load.asset', [this.src]);
             });
             on(img, "error", function() {
                 set_class(container, 'error');
                 detach(loading);
+                _hook(this, 'error.asset', [this.src]);
             });
             set_class(container, 'loading');
             insert(container, loading, controls);
@@ -370,7 +381,7 @@
         }, text.first, text.previous, text.next, text.last) + '</p>' : "";
     }
 
-    function set() {
+    function set(e) {
         var h = H.replace('%i%', '(-?(?:\\d*\\.)?\\d+)'),
             i = (new RegExp('^#?' + h + '$')).exec(loc.hash);
         i = i && i[1] && +i[1] || 0;
@@ -386,6 +397,7 @@
             insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', Math.ceil(images_length / chunk))), controls.firstChild);
         }
         container.className = classes + ' page-' + i;
+        e && _hook(container, 'change', [i]);
     } set();
 
     on(win, "hashchange", set);
@@ -400,6 +412,7 @@
                 html.scrollTop += top;
             }
             loc.hash = $.hash;
+            _hook($, 'click', [$.href]);
             e.preventDefault();
         }
     });
@@ -430,6 +443,7 @@
         reset_class(container, 'error');
         reset_class(container, 'loading');
         detach(loading);
+        _hook(ul, 'load.ad', [$]);
     };
 
     win['_' + fn] = function($) {
@@ -448,7 +462,9 @@
         css = settings.css;
 
     if (css && !doc.getElementById(name + '-css')) {
-        load(is_string(css) ? css : canon(script.src, 'css'), 0, {
+        load(is_string(css) ? css : canon(script.src, 'css'), function() {
+            _hook(this, 'load.asset', [this.href]);
+        }, {
             'class': name + '-css',
             'id': name + '-css'
         });
@@ -461,5 +477,7 @@
 
     source.innerHTML = "";
     insert(source, container);
+
+    _hook(container, 'ready', [settings]);
 
 })(window, document);

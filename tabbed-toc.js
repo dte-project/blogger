@@ -206,6 +206,7 @@
         name = settings.name,
         ad = settings.ad,
         text = settings.text,
+        event = settings.e,
         container = el('div', '<h3 class="' + name + '-title">' + text.title + '</h3>', {
             'class': name + ' ' + settings.direction,
             'id': name + ':' + hash
@@ -213,6 +214,14 @@
         loading = el('p', text.loading, {
             'class': name + '-loading'
         }), ol, list;
+
+    event = event && win[event];
+
+    function _hook(target, type, args) {
+        args = args || [];
+        args.unshift(type);
+        typeof event === "function" && event.apply(target, args);
+    }
 
     if (ad === true) {
         ad = 3;
@@ -322,6 +331,8 @@
             set_class(current_panel, 'active');
             current_panel.style.display = "";
             current_panel.previousSibling.style.display = "";
+            _hook(this, 'click', [{}, tabs, panels]);
+            _hook(container, 'change', [{}, current, current_panel]);
             e.preventDefault();
         }
 
@@ -362,6 +373,8 @@
                 'id': name + '-panel:' + hash + '.' + i
             }));
         }
+
+        _hook(container, 'load', [$, tabs, panels]);
 
     };
 
@@ -462,9 +475,11 @@
             var img = ol.getElementsByTagName('img'),
                 img_error = function() {
                     set_class(this.parentNode, 'error');
+                    _hook(this, 'error.asset', [this.src]);
                 },
                 img_load = function() {
                     reset_class(this.parentNode, 'loading');
+                    _hook(this, 'load.asset', [this.src]);
                 };
             for (i = 0, j = img.length; i < j; ++i) {
                 on(img[i], "error", img_error);
@@ -482,6 +497,8 @@
 
         panels[term].$ = true;
 
+        _hook(panels[term], 'load', [{}, tabs, panels]);
+
     };
 
     win['_' + fn + '_'] = function($) {
@@ -492,6 +509,7 @@
             set_class(entry, 'ad');
             insert(ol, entry, ol.firstChild);
         }
+        _hook(entry, 'load.ad', [$, tabs, panels]);
     };
 
     function fire() {
@@ -502,7 +520,9 @@
         var c = settings.container,
             css = settings.css;
         if (css && !doc.getElementById(name + '-css')) {
-            load(is_string(css) ? css : canon(script.src, 'css'), 0, {
+            load(is_string(css) ? css : canon(script.src, 'css'), function() {
+                _hook(this, 'load.asset', [this.href]);
+            }, {
                 'class': name + '-css',
                 'id': name + '-css'
             });
@@ -518,6 +538,7 @@
                 insert(script.parentNode, container, script);
             }
             reset_class(container.parentNode, name + '-loading');
+            _hook(this, 'load.asset', [this.src]);
             var active = settings.active;
             if (is_number(active)) {
                 active = tabs_indexes[active];
@@ -533,5 +554,7 @@
     } else {
         fire();
     }
+
+    _hook(container, 'ready', [settings, tabs, panels]);
 
 })(window, document);
