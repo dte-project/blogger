@@ -322,7 +322,6 @@
         };
 
         ol.innerHTML = "";
-        title.innerHTML = text.title.replace('%s%', ent(query));
         for (i = 0; i < entry_length; ++i) {
             insert(ol, list(entry[i]));
         }
@@ -445,6 +444,7 @@
     function search_submit(e) {
         var v = this.q;
         v = v && v.value;
+        title.innerHTML = text.title.replace('%s%', ent(v));
         container.children[0].innerHTML = "";
         if (v) {
             v = v.toLowerCase();
