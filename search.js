@@ -261,7 +261,7 @@
     }
 
     function get_css(prop) {
-        return win.getComputedStyle(doc.body).getPropertyValue(prop);
+        return win.getComputedStyle(bounds).getPropertyValue(prop);
     }
 
     function fit(e) {
@@ -299,8 +299,7 @@
 
         list = function(current) {
             if (!current) return;
-            var date = current.published.$t,
-                url = (current.link.find(function($) {
+            var url = (current.link.find(function($) {
                     return $.rel === "alternate";
                 }) || {}).href;
                 str = "";
