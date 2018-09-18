@@ -250,6 +250,10 @@
         return text.replace(q, '<mark>$&</mark>');
     }
 
+    function css(prop) {
+        return win.getComputedStyle(doc.body).getPropertyValue(prop);
+    }
+
     function fit() {
         if (settings.container || !container.parentNode) return;
         var rect = source.getBoundingClientRect(),
@@ -258,7 +262,7 @@
             W = rect.width,
             H = rect.height;
         set_class(container, name + '-float');
-        container.style.cssText = 'background-color:' + win.getComputedStyle(doc.body).getPropertyValue('background-color') + ';position:absolute;z-index:9999;top:' + (T + H) + 'px;left:' + rect.left + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
+        container.style.cssText = 'background-color:' + css('background-color') + ';color:' + css('color') + ';position:absolute;z-index:9999;top:' + (T + H) + 'px;left:' + rect.left + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
     }
 
     on(win, "resize", fit);
