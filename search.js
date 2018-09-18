@@ -104,7 +104,7 @@
             css: 1,
             ad: true,
             live: true,
-            source: 'form[action$="/search"][method="get"]',
+            source: 'form[action$="/search"]',
             container: 0,
             excerpt: 0,
             image: 0,
