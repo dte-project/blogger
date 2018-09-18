@@ -80,7 +80,7 @@
     }
 
     var q2o = win.q2o,
-        script = doc.currentScript || doc.getElementsByTagName('script').pop(),
+        script = doc.currentScript,
         loc = win.location,
         fn = Date.now(),
         defaults = {
@@ -308,7 +308,7 @@
         if (over) {
             view_sizer.innerHTML = "";
         }
-        load(blogger('298900102869691923') + '?alt=json-in-script&max-results=0&callback=_' + fn, function() {
+        load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn, function() {
             var w = view_sizer.offsetWidth;
             container.style.width = w ? w + 'px' : '100%';
             view.style.height = "";
@@ -391,11 +391,14 @@
     on(win, "hashchange", set);
 
     on(controls, "click", function(e) {
-        var $ = e.target, top;
+        var $ = e.target,
+            t = settings.top, top;
         if ($.nodeName.toLowerCase() === 'a') {
-            top = container.getBoundingClientRect().top - settings.top;
-            body.scrollTop += top;
-            html.scrollTop += top;
+            if (t !== false) {
+                top = container.getBoundingClientRect().top - t;
+                body.scrollTop += top;
+                html.scrollTop += top;
+            }
             loc.hash = $.hash;
             e.preventDefault();
         }
@@ -432,7 +435,7 @@
     win['_' + fn] = function($) {
         $ = $.feed || {};
         var i = random(1, (+$.openSearch$totalResults.$t - ad));
-        load(blogger('298900102869691923') + '?alt=json-in-script&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (fn + 1));
+        load(blogger('298900102869691923') + '?alt=json&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (fn + 1));
     };
 
     if (!script.id) {

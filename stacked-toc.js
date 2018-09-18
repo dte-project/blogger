@@ -110,7 +110,7 @@
     }
 
     var q2o = win.q2o,
-        script = doc.currentScript || doc.getElementsByTagName('script').pop(),
+        script = doc.currentScript,
         loc = win.location,
         storage = win.localStorage,
         headers = {},
@@ -168,7 +168,7 @@
                 recent: ' <sup>New!</sup>'
             },
             query: {
-                'alt': 'json-in-script',
+                'alt': 'json',
                 'orderby': 'published',
                 'max-results': infinity,
                 'start-index': 1
@@ -235,7 +235,7 @@
         }),
         loading = el('p', text.loading, {
             'class': name + '-loading'
-        });
+        }), list;
 
     if (ad === true) {
         ad = 3;
@@ -449,7 +449,7 @@
 
         set_class(container, state);
 
-        function list(current) {
+        list = function(current) {
             if (!current) return;
             var date = current.published.$t,
                 url = (current.link.find(function($) {
@@ -488,7 +488,7 @@
             return el('li', str, {
                 'class': current.$ ? 'recent' : false
             });
-        }
+        };
 
         for (i = 0; i < entry_length; ++i) {
             insert(ol, list(entry[i]));
