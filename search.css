@@ -24,10 +24,11 @@
 
 .ajax-search li {
   padding:1em;
+  margin:0 -1em;
   overflow:hidden;
 }
 
-.ajax-search li.ad {background:rgba(255,255,0,.25)}
+.ajax-search li.ad {background:rgba(255,255,0,.15)}
 
 .ajax-search h4 {
   font-size:125%;
@@ -38,6 +39,8 @@
   display:block;
   margin:1em 0 0;
 }
+
+.ajax-search-results-empty + nav {margin-top:0}
 
 .ajax-search nav::after {
   content:"";
@@ -72,16 +75,11 @@
   list-style:decimal;
   overflow:visible;
   padding:0;
+  margin:0;
 }
 
 .ajax-search.ltr:not(.has-image):not(.has-excerpt) li {margin:0 0 0 2em}
 .ajax-search.rtl:not(.has-image):not(.has-excerpt) li {margin:0 2em 0 0}
 
-.ajax-search-float {
-  -webkit-box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  box-sizing:border-box;
-  box-shadow:0 5px 10px rgba(0,0,0,.4);
-}
-
+.ajax-search-float {box-shadow:0 5px 10px rgba(0,0,0,.4)}
 .ajax-search-float > div {padding:.5em 1em}

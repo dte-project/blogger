@@ -180,8 +180,20 @@
     var hash = settings.i,
         url = settings.id || canon(settings.url),
         name = settings.name,
-        ad = settings.ad,
-        text = settings.text,
+        ad = settings.ad;
+
+    if (ad === true) {
+        ad = 3;
+    }
+
+    // Allow to update settings through current URL query string
+    var settings_alt = q2o(loc.search);
+    if (is_set(settings_alt[hash])) {
+        delete settings_alt[hash].url; // but `url`
+        settings = extend(settings, settings_alt[hash]);
+    }
+
+    var text = settings.text,
         chunk = settings.chunk,
         bounds = settings.container && doc.querySelector(settings.container) || doc.body,
         container = el('div', '<div></div>', {
@@ -215,17 +227,6 @@
             'class': name + '-loading'
         }), list;
 
-    if (ad === true) {
-        ad = 3;
-    }
-
-    // Allow to update settings through current URL query string
-    var settings_alt = q2o(loc.search);
-    if (is_set(settings_alt[hash])) {
-        delete settings_alt[hash].url; // but `url`
-        settings = extend(settings, settings_alt[hash]);
-    }
-
     function _show() {
         if (ad !== false) {
             var i = +(storage.getItem(name) || -1);
@@ -256,10 +257,11 @@
 
     function fit() {
         if (settings.container || !container.parentNode) return;
-        var T = source.offsetTop,
-            L = source.offsetLeft,
-            W = source.offsetWidth,
-            H = source.offsetHeight;
+        var O = 'offset',
+            T = source[O + 'Top'],
+            L = source[O + 'Left'],
+            W = source[O + 'Width'],
+            H = source[O + 'Height'];
         set_class(container, name + '-float');
         container.style.cssText = 'background-color:' + get_css('background-color') + ';color:' + get_css('color') + ';position:absolute;z-index:9999;top:' + (T + H) + 'px;left:' + L + 'px;width:' + W + 'px;max-height:' + (win.innerHeight - T - H) + 'px;overflow:auto;';
     }
@@ -396,7 +398,8 @@
 
     function search_cache(q, i) {
         var c = caches[q][i],
-            k = container.children[0];
+            k = container.children[0],
+            p = start === 1 ? 'empty' : 'end';
         insert(k, title);
         if (c[0]) {
             previous.style.display = start > 1 ? "" : 'none';
@@ -404,7 +407,7 @@
             ol.innerHTML = c[1];
             insert(k, ol);
         } else {
-            k.innerHTML = '<p>' + text[start === 1 ? 'empty' : 'end'].replace('%s%', ent(query)) + '</p>';
+            k.innerHTML = '<p class="' + name + '-results-' + p + '">' + text[p].replace('%s%', ent(query)) + '</p>';
             next.style.display = 'none';
         }
         insert(k, nav);
