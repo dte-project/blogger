@@ -374,6 +374,8 @@
             })) + '&q=' + encode(query));
         }
 
+        _hook(container, 'load', [$, query, start]);
+
     };
 
     win['_' + fn + '_'] = function($) {
@@ -438,7 +440,7 @@
         detach(div);
         var parent = container.parentNode;
         set_class(parent, name + '-loading');
-        _hook(source, 'search', [q, i, !!(caches[q] && caches[q][i])]);
+        _hook(source, 'search', [q, i, !!(caches[q] && caches[q][i]), container]);
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + fn,
             'max-results': chunk,
@@ -518,6 +520,6 @@
         prevent(e);
     });
 
-    _hook(container, 'ready', [settings]);
+    _hook(source, 'ready', [settings, container]);
 
 })(window, document);
