@@ -170,7 +170,7 @@
     }
 
     if (ad === true) {
-        ad = 3;
+        ad = 10;
     }
 
     var step = settings.hash,
@@ -401,7 +401,7 @@
             pager_set(i);
             insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', Math.ceil(images_length / chunk))), controls.firstChild);
         }
-        container.className = classes + ' page-' + i;
+        container.className = classes + ' step-' + i;
         e && _hook(container, 'change', [i]);
     } set();
 

@@ -1,15 +1,34 @@
 .js-comic {
   background:#fff;
   color:#444;
+  line-height:1.5;
   box-shadow:0 1px 5px rgba(0,0,0,.5);
+  padding:4px;
+}
+.js-comic-content {
+  padding-right:1.5em;
+  padding-left:1.5em;
 }
 .js-comic-controls a,
 .js-comic-controls b,
-.js-comic-controls span {
+.js-comic-controls span,
+.js-comic-controls h3 {
   background:#009;
   color:#fff;
+  height:2em;
+  line-height:2em;
+  padding:0 .65em;
 }
+.js-comic-controls h3 {
+  background:none;
+  color:inherit;
+}
+.ltr .js-comic-controls a,
+.ltr .js-comic-controls b,
+.ltr .js-comic-controls span {margin-right:4px}
+.rtl .js-comic-controls a,
+.rtl .js-comic-controls b,
+.rtl .js-comic-controls span {margin-left:4px}
 .js-comic-controls p > span a:focus,
 .js-comic-controls p > span a:hover {background:#00a}
-.js-comic-controls p > span b {background:#444}
-.js-comic-controls p > span span {color:#444}
+.js-comic-controls p > span b {background:#666}

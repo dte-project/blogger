@@ -1,4 +1,4 @@
-/*! Page Splitter for Blogger <https://dte-project.github.io/blogger/next.html> */
+/*! Page Chunker for Blogger <https://dte-project.github.io/blogger/next.html> */
 
 /* <https://github.com/tovic/query-string-parser> */
 !function(n,r){function t(n,r){function t(n){return decodeURIComponent(n)}function e(n){return void 0!==n}function i(n){return"string"==typeof n}function u(n){return i(n)&&""!==n.trim()?'""'===n||"[]"===n||"{}"===n||'"'===n[0]&&'"'===n.slice(-1)||"["===n[0]&&"]"===n.slice(-1)||"{"===n[0]&&"}"===n.slice(-1):!1}function o(n){if(i(n)){if("true"===n)return!0;if("false"===n)return!1;if("null"===n)return null;if("'"===n.slice(0,1)&&"'"===n.slice(-1))return n.slice(1,-1);if(/^-?(\d*\.)?\d+$/.test(n))return+n;if(u(n))try{return JSON.parse(n)}catch(r){}}return n}function f(n,r,t){for(var e,i=r.split("["),u=0,o=i.length;o-1>u;++u)e=i[u].replace(/\]$/,""),n=n[e]||(n[e]={});n[i[u].replace(/\]$/,"")]=t}var c={},l=n.replace(/^.*?\?/,"");return""===l?c:(l.split(/&(?:amp;)?/).forEach(function(n){var i=n.split("="),u=t(i[0]),l=e(i[1])?t(i[1]):!0;l=!e(r)||r?o(l):l,"]"===u.slice(-1)?f(c,u,l):c[u]=l}),c)}n[r]=t}(window,"q2o");
@@ -82,6 +82,7 @@
     var q2o = win.q2o,
         script = doc.currentScript,
         loc = win.location,
+        storage = win.localStorage,
         fn = Date.now(),
         defaults = {
             i: fn,
@@ -90,7 +91,6 @@
             name: 'js-next',
             css: 1,
             ad: true,
-            save: true,
             source: '.type\\:next',
             container: 0,
             kin: 2,
@@ -102,9 +102,7 @@
                 previous: 'Previous',
                 next: 'Next',
                 last: 'Last',
-                current: 'Page %i% of %i~%',
-                enter: 'Read on&hellip;',
-                exit: 'Home'
+                current: 'Page %i% of %i~%'
             }
         },
         head = doc.head,
@@ -190,6 +188,18 @@
         html = body.parentNode,
         src, i, j, k;
 
+    function _show() {
+        if (ad !== false) {
+            var i = +(storage.getItem(name) || -1);
+            if (i > ad) {
+                storage.setItem(name, 0);
+                return true;
+            }
+            storage.setItem(name, ++i);
+        }
+        return false;
+    }
+
     function random(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -257,7 +267,8 @@
         return s;
     }
 
-    var div = el('div'), c;
+    var div = el('div'),
+        show = _show(), c;
     chunks[chunks_length] = div;
     while (c = source.firstChild) {
        // `<!-- next -->`
@@ -270,18 +281,16 @@
        }
        insert(div, c);
     }
-    ++chunks_length;
+    chunks_length += show ? 2 : 1;
 
     var a = container.children,
         content = a[0],
         controls = a[1];
 
     function ad_set(over) {
-        content.innerHTML = ad ? "" : '<p>' + text.error + '</p>';
-        if (ad) {
-            insert(container, loading, controls);
-            load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn);
-        }
+        content.innerHTML = "";
+        insert(container, loading, controls);
+        load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn);
     }
 
     function page_set(i) {
@@ -338,7 +347,7 @@
             chunks_length > 1 && insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', chunks_length)), controls.firstChild);
             classes = c;
         }
-        container.className = classes + ' page-' + i;
+        container.className = classes + ' step-' + i;
         e && _hook(container, 'change', [i]);
     } set();
 
@@ -369,8 +378,7 @@
             ss = ' style="display:block;width:80px;height:80px;">',
             i, j, s;
         if (!entry_length) return;
-        for (i = 0; i < ad; ++i) {
-            if (i === ad) break;
+        for (i = 0; i < entry_length; ++i) {
             j = entry[i];
             s = 'media$thumbnail' in j ? '<img alt="" src="' + j.media$thumbnail.url.replace(/\/s\d+(-c)?\//, '/s80-c/') + '" width="80" height="80"' + ss : '<span class="img"' + ss + '</span>';
             var url = (j.link.find(function($) {
@@ -389,8 +397,8 @@
 
     win['_' + fn] = function($) {
         $ = $.feed || {};
-        var i = random(1, (+$.openSearch$totalResults.$t - ad));
-        load(blogger('298900102869691923') + '?alt=json&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (fn + 1));
+        var i = random(1, (+$.openSearch$totalResults.$t - 10));
+        load(blogger('298900102869691923') + '?alt=json&orderby=updated&start-index=' + i + '&max-results=10&callback=_' + (fn + 1));
     };
 
     if (!script.id) {

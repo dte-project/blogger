@@ -11,9 +11,8 @@
 .js-next-controls span {
   display:block;
   font:inherit;
-  height:2em;
-  line-height:2em;
   text-decoration:none;
+  height:auto;
 }
 .ltr .js-next-controls a,
 .ltr .js-next-controls b,
@@ -36,8 +35,8 @@
 .js-next-controls h3 {
   font:inherit;
   margin:0;
-  line-height:2em;
-  height:2em;
+  padding:0;
+  height:auto;
 }
 .ltr .js-next-controls h3 {float:right}
 .rtl .js-next-controls h3 {float:left}
@@ -62,8 +61,6 @@
 }
 .js-next-ads h3 a {
   display:block;
-  position:relative;
-  z-index:4;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;

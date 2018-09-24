@@ -1,10 +1,8 @@
 .js-comic {
   font:inherit;
-  line-height:1.5;
   width:100%;
   margin-right:auto;
   margin-left:auto;
-  padding:4px;
   position:relative;
   -webkit-box-sizing:padding-box;
   -moz-box-sizing:padding-box;
@@ -89,11 +87,11 @@
   visibility:hidden;
 }
 .js-comic-content {
-  padding:1em 1.5em;
+  padding:1em 0;
   display:none;
 }
-.js-comic.page-0 .js-comic-content {display:block}
-.js-comic.page-0 .js-comic-content:empty {display:none}
+.js-comic.step-0 .js-comic-content {display:block}
+.js-comic.step-0 .js-comic-content:empty {display:none}
 .js-comic-image,
 .js-comic-content {margin-bottom:4px}
 .js-comic-controls p {margin:0}
@@ -107,22 +105,20 @@
 .js-comic-controls span {
   display:block;
   font:inherit;
-  height:2em;
-  line-height:2em;
-  padding:0 .75em;
   text-decoration:none;
+  height:auto;
 }
 .ltr .js-comic-controls a,
 .ltr .js-comic-controls b,
 .ltr .js-comic-controls span {
   float:left;
-  margin-right:4px;
+  margin-right:.5em;
 }
 .rtl .js-comic-controls a,
 .rtl .js-comic-controls b,
 .rtl .js-comic-controls span {
   float:right;
-  margin-left:4px;
+  margin-left:.5em;
 }
 .ltr .js-comic-controls p > span,
 .rtl .js-comic-controls p > span {
@@ -133,9 +129,8 @@
 .js-comic-controls h3 {
   font:inherit;
   margin:0;
-  padding:0 .65em;
-  line-height:2em;
-  height:2em;
+  padding:0;
+  height:auto;
 }
 .ltr .js-comic-controls h3 {float:right}
 .rtl .js-comic-controls h3 {float:left}
@@ -162,8 +157,6 @@
 }
 .js-comic-ads h3 a {
   display:block;
-  position:relative;
-  z-index:4;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
