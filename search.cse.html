@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>AJAX Search Widget and Google Custom Search for Blogger</title>
+    <link href="favicon.ico" rel="shortcut icon">
+    <style>body,html{margin:0;padding:0;background:#fff;color:#000;font:normal normal 20px/1.4 Roboto,Helmet,FreeSans,sans-serif}body{padding:2em}form,main{display:block;max-width:40em;margin:0 auto}blockquote{margin:0;padding:0;font-size:120%;color:#aaa}p{margin:0 0 1em}h1{font:inherit;font-size:200%;font-weight:700}</style>
+    <!-- Begin: CSE CSS -->
+    <style>
+    #cse-container .gsc-control-cse {
+      padding:0;
+      font-family:inherit;
+    }
+    #cse-container .gsc-control-cse .gsc-table-result {font-family:inherit}
+    </style>
+    <!-- End: CSE CSS -->
+  </head>
+  <body>
+    <form action="/search" method="get">
+      <p>
+        <input name="q" type="text">
+        <button type="submit">Search</button>
+      </p>
+      <p>
+        <strong>Search:</strong>
+        <label><input name="o" type="radio" value="cse" checked> Google</label>
+        <label><input name="o" type="radio"> Blog</label>
+      </p>
+    </form>
+    <main>
+      <p><strong>Documentation:</strong> <a href="https://developers.google.com/custom-search/docs/element" rel="nofollow" target="_blank">Custom Search Element Control API &middot; Google Custom Search</a></p>
+      <div class="post">
+        <h1 class="post-title">Calendars</h1>
+        <blockquote class="post-description">
+          <p>Different calendars have dissimilar bases.</p>
+        </blockquote>
+        <!-- Begin: CSE HTML -->
+        <div id="cse-container">
+          <div
+            class="gcse-searchresults-only"
+            data-gname="cse-search-results"
+            data-enableImageSearch="true"
+            data-noResultsString="No results."
+          ></div>
+        </div>
+        <!-- End: CSE HTML -->
+        <div class="post-body">
+          <p>Common types of calendars can be based on the Sun or on the Moon. The solar calendar is based on the solar year. Since the solar year is 365.2422 days long, solar calendars consist of regular years of 365 days and have an extra day every fourth year, or leap year, to make up for the additional fractional amount. In a solar calendar, the waxing and warning of the Moon can take place at various stages of each month.</p>
+          <p>The lunar calendar is synchronized to the lunar month rather than the solar year. Since the lunar month is twenty-nine and a half days long, most lunar calendars have alternating months of twenty-nine and thirty days. A twelve-month lunar year thus has 354 days, 11 days shorter than a solar year.</p>
+        </div>
+      </div>
+    </main>
+    <!-- Begin: CSE JS -->
+    <script>
+    (function() {
+        var cx = 'partner-pub-4884309229437815:4734643671';
+        var gcse = document.createElement('script');
+        gcse.async = true;
+        gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(gcse, s);
+    })();
+    </script>
+    <script>
+    function myHookFn(e, query, i, cached, container) {
+        if (e !== "search") return;
+        var cse = this.o && this.o.value === 'cse',
+            cse_results = google.search.cse.element.getElement('cse-search-results');
+        container.style.display = cse ? 'none' : "";
+        cse_results.clearAllResults();
+        if (cse && query) {
+            cse_results.execute(query);
+        }
+    }
+    </script>
+    <script src="search.js?i=1&amp;id=&quot;298900102869691923&quot;&amp;container=.post-body&amp;e=myHookFn"></script>
+    <!-- End: CSE JS -->
+  </body>
+</html>

@@ -440,7 +440,6 @@
         detach(div);
         var parent = container.parentNode;
         set_class(parent, name + '-loading');
-        _hook(source, 'search', [q, i, !!(caches[q] && caches[q][i]), container]);
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + fn,
             'max-results': chunk,
@@ -462,17 +461,18 @@
     }
 
     function search_submit(e) {
-        var v = this.q;
+        var v = this.q, cached;
         v = v && v.value;
         title.innerHTML = text.title.replace('%s%', ent(v));
         container.children[0].innerHTML = "";
         if (v) {
             v = v.toLowerCase();
-            if (caches[v] && caches[v][start]) {
+            if (cached = !!(caches[v] && caches[v][start])) {
                 search_cache(v, start);
             } else {
                 search(v, start);
             }
+            _hook(source, 'search', [v, start, cached, container]);
         } else {
             insert(bounds, div);
             detach(container);
@@ -482,8 +482,11 @@
     var live = settings.live,
         throttle;
 
-    function search_key() {
+    function search_key(e) {
         var t = this;
+        if (e.key && e.key === 'Enter' || e.keyCode && e.keyCode === 13) {
+            return;
+        }
         win.setTimeout(function() {
             if (live) {
                 throttle && win.clearTimeout(throttle);
