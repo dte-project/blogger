@@ -8,6 +8,7 @@
     <style>body,html{margin:0;padding:0;background:#fff;color:#000;font:normal normal 20px/1.4 Roboto,Helmet,FreeSans,sans-serif}body{padding:2em}form,main{display:block;max-width:40em;margin:0 auto}blockquote{margin:0;padding:0;font-size:120%;color:#aaa}p{margin:0 0 1em}h1{font:inherit;font-size:200%;font-weight:700}</style>
     <!-- Begin: CSE CSS -->
     <style>
+    #cse-container {display:none}
     #cse-container .gsc-control-cse {
       padding:0;
       font-family:inherit;
@@ -64,14 +65,16 @@
     })();
     </script>
     <script>
+    var container_cse = document.querySelector('#cse-container');
     function myHookFn(e, query, i, cached, container) {
         if (e !== "search") return;
         var cse = this.o && this.o.value === 'cse',
-            cse_results = google.search.cse.element.getElement('cse-search-results');
+            search = google.search.cse.element.getElement('cse-search-results');
         container.style.display = cse ? 'none' : "";
-        cse_results.clearAllResults();
+        container_cse.style.display = cse ? 'block' : "";
+        search.clearAllResults();
         if (cse && query) {
-            cse_results.execute(query);
+            search.execute(query);
         }
     }
     </script>

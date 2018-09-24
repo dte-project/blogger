@@ -80,6 +80,9 @@
       }
       form {margin-bottom:5%}
     }
+    </style>
+    <!-- Begin CSS -->
+    <style>
     article .gsc-control-cse {
       margin:0;
       padding:0;
@@ -87,6 +90,7 @@
     }
     article .gsc-wrapper {margin:0 0 5%}
     </style>
+    <!-- End CSS -->
   </head>
   <body>
     <header>
@@ -101,18 +105,24 @@
         <li><a href="">Contact</a></li>
       </ul>
     </nav>
+    <!-- Begin HTML Form -->
     <form method="get">
       <input name="q" type="text">
       <button type="submit">Search</button>
     </form>
+    <!-- End HTML Form -->
     <main>
       <article>
-        <div
-          class="gcse-searchresults-only"
-          data-gname="cse-search-results"
-          data-enableImageSearch="true"
-          data-noResultsString="No results."
-        ></div>
+        <!-- Begin HTML -->
+        <div id="cse-results" style="display:none;">
+          <div
+            class="gcse-searchresults-only"
+            data-gname="cse-search-results"
+            data-enableImageSearch="true"
+            data-noResultsString="No results."
+          ></div>
+        </div>
+        <!-- End HTML -->
         <h2>Longfellow&rsquo;s Popular Appeal</h2>
         <blockquote>
           <p>The popularity of Longfellow’s poems results from his stress on the values of the people.</p>
@@ -140,6 +150,7 @@
     <footer>
       <p>&copy; 2018 <a href="">Site Title</a></p>
     </footer>
+    <!-- Begin JS -->
     <script>
     (function() {
         var cx = 'partner-pub-4884309229437815:4734643671';
@@ -152,20 +163,26 @@
     </script>
     <script>
     var form = document.querySelector('form'),
-        container;
+        container = document.querySelector('#cse-results'),
+        search;
     form.addEventListener("submit", function(e) {
-        container = google.search.cse.element.getElement('cse-search-results');
+        search = google.search.cse.element.getElement('cse-search-results');
         var query = this.q.value;
+        container.style.display = query ? "" : 'none';
         if (query) {
-            container.execute(query);
+            search.execute(query);
         } else {
-            container.clearAllResults();
+            search.clearAllResults();
         }
         e.preventDefault();
     }, false);
     form.q.addEventListener("keyup", function(e) {
-        container && !this.value && container.clearAllResults();
+        if (search && !this.value) {
+            search.clearAllResults();
+            container.style.display = 'none';
+        }
     });
     </script>
+    <!-- End JS -->
   </body>
 </html>
