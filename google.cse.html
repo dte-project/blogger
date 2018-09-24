@@ -14,17 +14,15 @@
       background:none;
       border:0;
       outline:0;
-      color:#000;
+      color:inherit;
       -webkit-box-sizing:border-box;
       -moz-box-sizing:border-box;
       box-sizing:border-box;
     }
-    html {
-      font-family:serif;
-      font-size:18px;
-    }
+    html {font:normal normal 18px/1.25 serif}
     body {
       background:#fff;
+      color:#000;
       padding:5%;
       margin:0 auto;
       max-width:1000px;
@@ -44,8 +42,11 @@
     header {margin:0 0 5%}
     nav {margin:0 0 5%}
     nav ul {overflow:hidden}
-    nav li {float:left}
-    nav li + li {margin-left:1em}
+    nav li {
+      float:left;
+      margin:0 1em 0 0;
+    }
+    nav li:last-child {margin-right:0}
     main::after {
       content:"";
       display:table;
@@ -91,12 +92,14 @@
     </style>
     <!-- Begin CSS -->
     <style>
-    article .gsc-control-cse {
+    #cse-container .gsc-control-cse {
       margin:0;
       padding:0;
       border:0;
+      font-family:inherit !important;
     }
-    article .gsc-wrapper {margin:0 0 5%}
+    #cse-container .gsc-control-cse * {font-family:inherit !important}
+    #cse-container .gsc-wrapper {margin:0 0 5%}
     </style>
     <!-- End CSS -->
   </head>
@@ -114,22 +117,22 @@
       </ul>
     </nav>
     <!-- Begin HTML Form -->
-    <form method="get">
+    <form id="cse-search" method="get">
       <p>
         <input name="q" type="text">
         <button type="submit">Search</button>
-        <a href="" style="display:none;">Clear Searches</a>
+        <a id="cse-x" href="" style="display:none;">Clear Searches</a>
       </p>
     </form>
     <!-- End HTML Form -->
     <main>
       <article>
         <!-- Begin HTML -->
-        <div id="cse-results" style="display:none;">
+        <div id="cse-container" style="display:none;">
           <div
             class="gcse-searchresults-only"
             data-gname="cse-search-results"
-            data-enableImageSearch="true"
+            data-enableImageSearch="false"
             data-noResultsString="No results."
           ></div>
         </div>
@@ -173,14 +176,17 @@
     })();
     </script>
     <script>
-    var form = document.querySelector('form'),
-        x = form.querySelector('a'),
-        container = document.querySelector('#cse-results'),
-        search;
+    function $(el) {
+        return document.getElementById(el);
+    }
+    var form = $('cse-search'),
+        x = $('cse-x'),
+        container = $('cse-container'),
+        search, query;
     // `<form>`
     form.addEventListener("submit", function(e) {
         search = google.search.cse.element.getElement('cse-search-results');
-        var query = this.q.value;
+        query = this.q.value;
         container.style.display = query ? "" : 'none';
         x.style.display = query ? "" : 'none';
         if (query) {
