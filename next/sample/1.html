@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>JavaScript Detect Scroll Direction</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    html,
+    body {
+      background:#fff;
+      color:#000;
+      margin:0;
+      padding:0;
+      font-family:sans-serif;
+    }
+    blockquote {
+      margin:0;
+      padding:0;
+      font-size:120%;
+      color:#999;
+    }
+    main {
+      max-width:600px;
+      margin:0 auto;
+      padding:50px 0;
+    }
+    header,
+    footer {
+      position:fixed;
+      right:0;
+      left:0;
+      z-index:9999;
+      color:#fff;
+      box-shadow:0 0 5px rgba(0,0,0,.5);
+      height:50px;
+      line-height:50px;
+      padding:0 20px;
+      -webkit-transition:all .15s ease-out;
+      -moz-transition:all .15s ease-out;
+      transition:all .15s ease-out;
+      -webkit-transition-property:top,bottom;
+      -moz-transition-property:top,bottom;
+      transition-property:top,bottom;
+    }
+    header {
+      top:-50px;
+      background:#000;
+    }
+    footer {
+      bottom:-50px;
+      background:#009;
+    }
+    header.show {top:0}
+    footer.show {bottom:0}
+    </style>
+  </head>
+  <body>
+    <header class="show">Header</header>
+    <main>
+      <h1>Calendars</h1>
+      <blockquote class="post-description">
+        <p>Different calendars have dissimilar bases.</p>
+      </blockquote>
+      <p>Common types of calendars can be based on the Sun or on the Moon. The solar calendar is based on the solar year. Since the solar year is 365.2422 days long, solar calendars consist of regular years of 365 days and have an extra day every fourth year, or leap year, to make up for the additional fractional amount. In a solar calendar, the waxing and warning of the Moon can take place at various stages of each month.</p>
+      <p>The lunar calendar is synchronized to the lunar month rather than the solar year. Since the lunar month is twenty-nine and a half days long, most lunar calendars have alternating months of twenty-nine and thirty days. A twelve-month lunar year thus has 354 days, 11 days shorter than a solar year.</p>
+      <hr>
+      <p>Common types of calendars can be based on the Sun or on the Moon. The solar calendar is based on the solar year. Since the solar year is 365.2422 days long, solar calendars consist of regular years of 365 days and have an extra day every fourth year, or leap year, to make up for the additional fractional amount. In a solar calendar, the waxing and warning of the Moon can take place at various stages of each month.</p>
+      <p>The lunar calendar is synchronized to the lunar month rather than the solar year. Since the lunar month is twenty-nine and a half days long, most lunar calendars have alternating months of twenty-nine and thirty days. A twelve-month lunar year thus has 354 days, 11 days shorter than a solar year.</p>
+      <hr>
+      <p>Common types of calendars can be based on the Sun or on the Moon. The solar calendar is based on the solar year. Since the solar year is 365.2422 days long, solar calendars consist of regular years of 365 days and have an extra day every fourth year, or leap year, to make up for the additional fractional amount. In a solar calendar, the waxing and warning of the Moon can take place at various stages of each month.</p>
+      <p>The lunar calendar is synchronized to the lunar month rather than the solar year. Since the lunar month is twenty-nine and a half days long, most lunar calendars have alternating months of twenty-nine and thirty days. A twelve-month lunar year thus has 354 days, 11 days shorter than a solar year.</p>
+    </main>
+    <footer class="show">Footer</footer>
+    <script>
+    var header = document.querySelector('header'),
+        footer = document.querySelector('footer'),
+        currentPageYOffset = 0;
+    window.addEventListener("scroll", function() {
+        var Y = this.pageYOffset;
+        if (currentPageYOffset < Y) {
+            header.classList.remove('show');
+            footer.classList.remove('show');
+        } else if (currentPageYOffset > Y) {
+            header.classList.add('show');
+            footer.classList.add('show');
+        }
+        currentPageYOffset = Y;
+    }, false);
+    </script>
+  </body>
+</html>

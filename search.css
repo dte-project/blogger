@@ -1,14 +1,14 @@
-.ajax-search.ltr {direction:ltr}
-.ajax-search.rtl {direction:rtl}
+.js-search.ltr {direction:ltr}
+.js-search.rtl {direction:rtl}
 
-.ajax-search a {text-decoration:none}
+.js-search a {text-decoration:none}
 
-.ajax-search h3,
-.ajax-search h4,
-.ajax-search li,
-.ajax-search nav,
-.ajax-search ol,
-.ajax-search p {
+.js-search h3,
+.js-search h4,
+.js-search li,
+.js-search nav,
+.js-search ol,
+.js-search p {
   margin:0;
   padding:0;
   font-size:100%;
@@ -17,69 +17,69 @@
   list-style:none;
 }
 
-.ajax-search h3 {
+.js-search h3 {
   font-size:120%;
   margin:0 0 1em;
 }
 
-.ajax-search li {
+.js-search li {
   padding:1em;
   margin:0 -1em;
   overflow:hidden;
 }
 
-.ajax-search li.ad {background:rgba(255,255,0,.15)}
+.js-search li.ad {background:rgba(255,255,0,.15)}
 
-.ajax-search h4 {
+.js-search h4 {
   font-size:125%;
   margin:-.25em 0 .25em;
 }
 
-.ajax-search nav {
+.js-search nav {
   display:block;
   margin:1em 0 0;
 }
 
-.ajax-search-results-empty + nav {margin-top:0}
+.js-search-results-empty + nav {margin-top:0}
 
-.ajax-search nav::after {
+.js-search nav::after {
   content:"";
   display:table;
   clear:both;
 }
 
-.ltr .ajax-search-previous {float:left}
-.ltr .ajax-search-next {float:right}
+.ltr .js-search-previous {float:left}
+.ltr .js-search-next {float:right}
 
-.rtl .ajax-search-previous {float:right}
-.rtl .ajax-search-next {float:left}
+.rtl .js-search-previous {float:right}
+.rtl .js-search-next {float:left}
 
-.ltr .ajax-search-image {
+.ltr .js-search-image {
   float:left;
   margin:0 1em 0 0;
 }
 
-.rtl .ajax-search-image {
+.rtl .js-search-image {
   float:right;
   margin:0 0 0 1em;
 }
 
-.ajax-search .img {background:rgba(0,0,0,.05)}
+.js-search .img {background:rgba(0,0,0,.05)}
 
-.ajax-search:not(.has-image):not(.has-excerpt) h4 {
+.js-search:not(.has-image):not(.has-excerpt) h4 {
   font-size:100%;
   margin:0;
 }
 
-.ajax-search:not(.has-image):not(.has-excerpt) li {
+.js-search:not(.has-image):not(.has-excerpt) li {
   list-style:decimal;
   overflow:visible;
   padding:0;
   margin:0;
 }
 
-.ajax-search.ltr:not(.has-image):not(.has-excerpt) li {margin:0 0 0 2em}
-.ajax-search.rtl:not(.has-image):not(.has-excerpt) li {margin:0 2em 0 0}
+.js-search.ltr:not(.has-image):not(.has-excerpt) li {margin:0 0 0 2em}
+.js-search.rtl:not(.has-image):not(.has-excerpt) li {margin:0 2em 0 0}
 
-.ajax-search-float {box-shadow:0 5px 10px rgba(0,0,0,.4)}
-.ajax-search-float > div {padding:.5em 1em}
+.js-search-float {box-shadow:0 5px 10px rgba(0,0,0,.4)}
+.js-search-float > div {padding:.5em 1em}

@@ -1,4 +1,4 @@
-/*! Comic Viewer for Blogger V2 <https://dte-project.github.io/blogger/comic.html> */
+/*! Page Splitter for Blogger <https://dte-project.github.io/blogger/next.html> */
 
 /* <https://github.com/tovic/query-string-parser> */
 !function(n,r){function t(n,r){function t(n){return decodeURIComponent(n)}function e(n){return void 0!==n}function i(n){return"string"==typeof n}function u(n){return i(n)&&""!==n.trim()?'""'===n||"[]"===n||"{}"===n||'"'===n[0]&&'"'===n.slice(-1)||"["===n[0]&&"]"===n.slice(-1)||"{"===n[0]&&"}"===n.slice(-1):!1}function o(n){if(i(n)){if("true"===n)return!0;if("false"===n)return!1;if("null"===n)return null;if("'"===n.slice(0,1)&&"'"===n.slice(-1))return n.slice(1,-1);if(/^-?(\d*\.)?\d+$/.test(n))return+n;if(u(n))try{return JSON.parse(n)}catch(r){}}return n}function f(n,r,t){for(var e,i=r.split("["),u=0,o=i.length;o-1>u;++u)e=i[u].replace(/\]$/,""),n=n[e]||(n[e]={});n[i[u].replace(/\]$/,"")]=t}var c={},l=n.replace(/^.*?\?/,"");return""===l?c:(l.split(/&(?:amp;)?/).forEach(function(n){var i=n.split("="),u=t(i[0]),l=e(i[1])?t(i[1]):!0;l=!e(r)||r?o(l):l,"]"===u.slice(-1)?f(c,u,l):c[u]=l}),c)}n[r]=t}(window,"q2o");
@@ -87,17 +87,14 @@
             i: fn,
             hash: '!page=%i%',
             direction: 'ltr',
-            name: 'js-comic',
+            name: 'js-next',
             css: 1,
             ad: true,
             save: true,
-            source: '.type\\:comic',
-            find: 'a[href],img[src]',
+            source: '.type\\:next',
             container: 0,
-            image: 1600,
-            chunk: 1,
             kin: 2,
-            top: 0,
+            top: 15,
             text: {
                 loading: 'Loading&hellip;',
                 first: 'First',
@@ -175,16 +172,13 @@
 
     var step = settings.hash,
         text = settings.text,
-        find = source.querySelectorAll(settings.find),
         size = settings.image,
         direction = settings.direction,
-        chunk = settings.chunk,
         kin = settings.kin,
-        images = {},
-        images_length = 0,
-        images_chunk = [],
-        container = el('div', '<div class="' + name + '-image ' + name + '-height" style="overflow:hidden;"' + (settings.save ? "" : ' oncontextmenu="return false;"') + '><div style="float:left;"></div></div><div class="' + name + '-content"></div><div class="' + name + '-controls"></div>', {
-            'class': name + ' ' + name + '-width ' + direction + ' loading',
+        chunks = {},
+        chunks_length = 0,
+        container = el('div', '<div class="' + name + '-content"></div><div class="' + name + '-controls"></div>', {
+            'class': name + ' ' + direction,
             'id': name + ':' + hash
         }),
         loading = el('p', text.loading, {
@@ -197,23 +191,6 @@
 
     function random(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function strip(x) {
-        return x.replace(/<\/?(\w+)(?:\s[^<>])?>/g, function($, a) {
-            // Keep safe HTML tag(s)
-            if (/^a(bbr)?|br?|blockquote|c(aption|ite|ode)|del|h(r|[0-6])|ins|li|[ou]l|p(re)?|s(u[bp])?|t(able|body|head|foot|[dhr])|u|var$/i.test(a)) {
-                return $;
-            }
-            return "";
-        }).trim();
-    }
-
-    function resize(x, to) {
-        // `a1000`, `a1000-b`, `a1000-b1000`, `a1000-b1000-c`
-        return x.replace(/\/[a-z]\d+(-[a-z](\d+)?)*\//, function($, a) {
-            return '/s' + to + '/';
-        });
     }
 
     // <http://salman-w.blogspot.com/2014/04/stackoverflow-like-pagination.html>
@@ -279,127 +256,75 @@
         return s;
     }
 
-    for (i = 0, j = find.length; i < j; ++i) {
-        k = find[i];
-        src = resize(k.href && /\.(gif|jpe?g|png)$/i.test(k.href.split('?')[0]) && k.href || k.src, size);
-        while (k !== source) {
-            if (k.parentNode === source) {
-                break;
-            }
-            k = k.parentNode;
-        }
-        images[src] = k;
+    var div = el('div'), c;
+    chunks[chunks_length] = div;
+    while (c = source.firstChild) {
+       // `<!-- next -->`
+       if (c && c.nodeType === 8 && c.nodeValue.trim().toLowerCase() === 'next') {
+           div = el('div');
+           ++chunks_length;
+           chunks[chunks_length] = div;
+           detach(c);
+           continue;
+       }
+       insert(div, c);
     }
+    ++chunks_length;
 
-    for (i in images) {
-        detach(images[i]);
-    }
-
-    images = Object.keys(images);
-    images_length = images.length;
-
-    var cover = images.shift(),
-        a = container.children,
-        view = a[0],
-        view_sizer = view.firstChild,
-        content = a[1],
-        controls = a[2],
-        div = el('div'), c;
-
-    div.innerHTML = strip(source.innerHTML);
-
-    while (c = div.firstChild) {
-        content.appendChild(c);
-    }
-
-    ad && images.splice(random(1, images_length), 0, true);
-
-    for (i = 0; i < images_length; i += chunk) {
-        images_chunk.push(images.slice(i, i + chunk));
-    }
+    var a = container.children,
+        content = a[0],
+        controls = a[1];
 
     function ad_set(over) {
         if (over) {
-            view_sizer.innerHTML = "";
+            content.innerHTML = "";
         }
-        load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn, function() {
-            var w = view_sizer.offsetWidth;
-            container.style.width = w ? w + 'px' : '100%';
-            view.style.height = "";
-        });
-    }
-
-    var images_loaded = 0;
-
-    function image_set(src, wait) {
-        if (src === true) {
-            ad_set();
-        } else {
-            var img = doc.createElement('img');
-            img.src = src;
-            on(img, "load", function() {
-                this.width = this.offsetWidth;
-                this.height = this.offsetHeight;
-                // this.title = this.src.split('/').pop();
-                ++images_loaded;
-                if (!wait || images_loaded === chunk) {
-                    reset_class(container, 'loading');
-                    detach(loading);
-                    container.style.width = view_sizer.offsetWidth + 'px';
-                    view.style.height = view_sizer.offsetHeight + 'px';
-                }
-                _hook(this, 'load.asset', [this.src]);
-            });
-            on(img, "error", function() {
-                set_class(container, 'error');
-                detach(loading);
-                _hook(this, 'error.asset', [this.src]);
-            });
-            set_class(container, 'loading');
-            insert(container, loading, controls);
-            insert(view_sizer, img);
-        }
+        insert(container, loading, controls);
+        load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn);
     }
 
     function page_set(i) {
-        reset_class(container, 'error');
-        reset_class(container, 'loading');
-        view_sizer.innerHTML = "";
-        if (is_number(i)) {
-            images_loaded = 0;
-            for (var j = 0; j < chunk; ++j) {
-                if (!images_chunk[i][j]) {
-                    break;
-                }
-                image_set(images_chunk[i][j], 1);
-            }
-        } else if (is_string(i)) {
-            image_set(i);
+        c = content.firstChild;
+        c && detach(c);
+        if (is_set(chunks[i])) {
+            insert(content, chunks[i]);
+            asset_set(); // load asset(s)
         } else {
-            ad_set(1);
+            ad_set();
+        }
+    }
+
+    function asset_set() {
+        var assets = content.querySelectorAll('[data-src]');
+        for (i = 0, j = assets.length; i < j; ++i) {
+            k = assets[i];
+            k.src = k.getAttribute('data-src');
+            k.removeAttribute('data-src');
         }
     }
 
     function pager_set(i) {
-        controls.innerHTML = is_string(i) ? i : i > 0 ? '<p>' + pager(i, images_length, chunk, kin, function(i) {
-            return '#' + step.replace('%i%', i);
-        }, text.first, text.previous, text.next, text.last) + '</p>' : "";
+        if (chunks_length > 1) {
+            controls.innerHTML = is_string(i) ? i : i > 0 ? '<p>' + pager(i, chunks_length, 1, kin, function(i) {
+                return '#' + step.replace('%i%', i);
+            }, text.first, text.previous, text.next, text.last) + '</p>' : "";
+        }
     }
 
     function set(e) {
         var h = step.replace('%i%', '(-?(?:\\d*\\.)?\\d+)'),
-            i = (new RegExp('^#?' + h + '$')).exec(loc.hash);
-        i = i && i[1] && +i[1] || 0;
-        if (i === 0) {
-            page_set(cover);
-            pager_set('<p><span><a href="#' + step.replace('%i%', 1) + '">' + text.enter + '</a></span></p>');
-        } else if (i < 0 || i > images_length) {
+            i = (new RegExp('^#?' + h + '$')).exec(loc.hash),
+            c = classes;
+        i = i && i[1] && +i[1] || 1;
+        if (i < 1 || i > chunks_length) {
             ad_set(1);
             pager_set();
+            classes = c + ' loading';
         } else {
             page_set(i - 1);
             pager_set(i);
-            insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', Math.ceil(images_length / chunk))), controls.firstChild);
+            chunks_length > 1 && insert(controls, el('h3', text.current.replace('%i%', i).replace('%i~%', chunks_length)), controls.firstChild);
+            classes = c;
         }
         container.className = classes + ' page-' + i;
         e && _hook(container, 'change', [i]);
@@ -444,8 +369,7 @@
             s += '<p>' + j.summary.$t.replace(/<.*?>/g, "").replace(/[<>]/g, "").slice(0, 200) + '&hellip;</p>';
             insert(ul, el('li', s));
         }
-        insert(view_sizer, ul);
-        reset_class(container, 'error');
+        insert(content, ul);
         reset_class(container, 'loading');
         detach(loading);
         _hook(ul, 'load.ad', [$]);

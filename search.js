@@ -100,7 +100,7 @@
             direction: 'ltr',
             url: loc.protocol + '//' + loc.host,
             // id: 0,
-            name: 'ajax-search',
+            name: 'js-search',
             css: 1,
             ad: true,
             live: true,
