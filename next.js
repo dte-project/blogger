@@ -297,6 +297,7 @@
         c = content.firstChild;
         c && detach(c);
         if (is_set(chunks[i])) {
+            detach(loading);
             insert(content, chunks[i]);
             asset_set(); // load asset(s)
         } else {
