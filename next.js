@@ -97,6 +97,7 @@
             top: 15,
             text: {
                 loading: 'Loading&hellip;',
+                error: 'Not found.',
                 first: 'First',
                 previous: 'Previous',
                 next: 'Next',
@@ -276,11 +277,11 @@
         controls = a[1];
 
     function ad_set(over) {
-        if (over) {
-            content.innerHTML = "";
+        content.innerHTML = ad ? "" : '<p>' + text.error + '</p>';
+        if (ad) {
+            insert(container, loading, controls);
+            load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn);
         }
-        insert(container, loading, controls);
-        load(blogger('298900102869691923') + '?alt=json&max-results=0&callback=_' + fn);
     }
 
     function page_set(i) {
@@ -295,11 +296,22 @@
     }
 
     function asset_set() {
-        var assets = content.querySelectorAll('[data-src]');
+        var assets = content.querySelectorAll('[data-src]'),
+            asset_error = function() {
+                set_class(this, 'error');
+                _hook(this, 'error.asset', [this.src]);
+            },
+            asset_load = function() {
+                reset_class(this, 'loading');
+                _hook(this, 'load.asset', [this.src]);
+            };
         for (i = 0, j = assets.length; i < j; ++i) {
             k = assets[i];
+            set_class(k, 'loading');
             k.src = k.getAttribute('data-src');
             k.removeAttribute('data-src');
+            on(k, "error", asset_error);
+            on(k, "load", asset_load);
         }
     }
 
@@ -317,7 +329,7 @@
             c = classes;
         i = i && i[1] && +i[1] || 1;
         if (i < 1 || i > chunks_length) {
-            ad_set(1);
+            ad_set();
             pager_set();
             classes = c + ' loading';
         } else {
