@@ -222,7 +222,7 @@
             end = Math.ceil(count / chunk),
             s = "",
             i, min, max;
-        if (end === 1) {
+        if (end <= 1) {
             return;
         }
         if (current <= kin + kin) {
