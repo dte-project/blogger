@@ -146,14 +146,19 @@
   margin:0;
   padding:0;
   list-style:none;
-  overflow:hidden;
+}
+
+.js-comic .js-comic-ads li::after {
+  content:"";
+  display:table;
+  clear:both;
 }
 .js-comic .js-comic-ads {padding:.5em 0}
 .js-comic img + .js-comic-ads {margin-top:4px}
 .js-comic .js-comic-ads li {padding:.5em 1em}
 .js-comic-ads h3 {
   font:inherit;
-  margin:-.4em 0 0;
+  margin:0;
 }
 .js-comic-ads h3 a {
   display:block;

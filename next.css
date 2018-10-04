@@ -52,12 +52,16 @@
   margin:0;
   padding:0;
   list-style:none;
-  overflow:hidden;
+}
+.js-next-ads li::after {
+  content:"";
+  display:table;
+  clear:both;
 }
 .js-next-ads li + li {margin-top:1em}
 .js-next-ads h3 {
   font:inherit;
-  margin:-.4em 0 0;
+  margin:0;
 }
 .js-next-ads h3 a {
   display:block;

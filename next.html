@@ -104,16 +104,16 @@
 <!-- next -->
 <h3>JavaScript Events Test</h3>
 <p><button>Test 1</button> <button onclick="alert('works too!');">Test 2</button></p>
-<script>
-document.querySelector('button').addEventListener("click", function() {
-    alert('works!');
-});
-</script>
 <p>Ut et sapien purus. Praesent auctor mauris lectus, vitae euismod augue mollis at. Pellentesque eget vehicula augue. Donec in dignissim erat. Aliquam at aliquam nibh, non dapibus lorem. Integer cursus erat lectus, at euismod metus ultrices rhoncus. Aliquam convallis in diam nec efficitur. Ut luctus blandit hendrerit. Mauris at nulla sollicitudin, varius augue viverra, hendrerit leo.</p>
 
 
   </div>
 </div>
+    <script>
+    document.querySelector('button').addEventListener("click", function() {
+        alert('works!');
+    });
+    </script>
     <script>
     function myHookFn() {
         console.log([arguments[0], this, arguments]);
