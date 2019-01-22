@@ -108,7 +108,7 @@
             active: 0,
             container: 0,
             // <https://en.wikipedia.org/wiki/Date_and_time_notation_in_the_United_States>
-            date: '%M~% %D%, %Y% %h%:%m% %?%',
+            date: '%M~% %D%, %Y% %h%:%m% %N%',
             excerpt: 0,
             image: 0,
             target: 0,
@@ -118,7 +118,7 @@
             text: {
                 title: 'Table of Content',
                 loading: 'Loading&hellip;',
-                midday: ['AM', 'PM'],
+                noon: ['AM', 'PM'],
                 months: [
                     'January',
                     'February',
@@ -263,7 +263,7 @@
             'h': hour_12 + "",
             'm': time[1],
             's': Math.floor(+time[2]) + "",
-            '\\?': text.midday[hour_12 < 12 || hour_12 === 24 ? 0 : 1]
+            'N': text.noon[hour_12 < 12 || hour_12 === 24 ? 0 : 1]
         }, i;
         for (i in symbols) {
             to = to.replace(/\\%/g, '&#37;').replace(new RegExp('%' + i + '%', 'g'), symbols[i]);
