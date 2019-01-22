@@ -193,7 +193,7 @@
         classes = container.className,
         body = doc.body,
         html = body.parentNode,
-        src, i, j, k;
+        src, i, j, k, l;
 
     function random(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -212,7 +212,10 @@
     function resize(x, to) {
         // `a1000`, `a1000-b`, `a1000-b1000`, `a1000-b1000-c`
         return x.replace(/\/[a-z]\d+(-[a-z](\d+)?)*\//, function($, a) {
-            return '/s' + to + '/';
+            if (/^\d+$/.test(to + "")) {
+                to = 's' + to;
+            }
+            return '/' + to + '/';
         });
     }
 
@@ -281,7 +284,13 @@
 
     for (i = 0, j = find.length; i < j; ++i) {
         k = find[i];
-        src = resize(k.href && /\.(gif|jpe?g|png)$/i.test(k.href.split('?')[0]) && k.href || k.src, size);
+        l = k.parentNode;
+        var regex = /\.(gif|jpe?g|png)$/i;
+        // Skip anchored image!
+        if (l && l.href && regex.test(l.href)) {
+            continue;
+        }
+        src = resize(k.href && regex.test(k.href.split('?')[0]) && k.href || k.src, size);
         while (k !== source) {
             if (k.parentNode === source) {
                 break;
@@ -296,7 +305,6 @@
     }
 
     images = Object.keys(images);
-    images_length = images.length;
 
     var cover = images.shift(),
         a = container.children,
@@ -306,13 +314,18 @@
         controls = a[2],
         div = el('div'), c;
 
+    images_length = images.length;
+
     div.innerHTML = strip(source.innerHTML);
 
     while (c = div.firstChild) {
         content.appendChild(c);
     }
 
-    ad && images.splice(random(1, images_length), 0, true);
+    if (ad) {
+        images.splice(random(1, images_length), 0, true);
+        images_length += 1;
+    }
 
     for (i = 0; i < images_length; i += chunk) {
         images_chunk.push(images.slice(i, i + chunk));
@@ -454,7 +467,7 @@
     win['_' + fn] = function($) {
         $ = $.feed || {};
         var i = random(1, (+$.openSearch$totalResults.$t - ad));
-        load(blogger('298900102869691923') + '?alt=json&orderby=updated&start-index=' + i + '&max-results=' + ad + '&callback=_' + (fn + 1));
+        load(blogger('298900102869691923') + '?alt=json&orderby=updated&start-index=' + i + '&max-results=' + (ad || 0) + '&callback=_' + (fn + 1));
     };
 
     if (!script.id) {
