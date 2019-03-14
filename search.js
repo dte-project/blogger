@@ -256,7 +256,9 @@
         if (!query) {
             return text;
         }
-        var q = new RegExp(query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\\\$&'), 'i');
+        var q = query.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\\\$&');
+        q = q.replace(/\s+/g, '\\s+');
+        q = new RegExp(q, 'i');
         return text.replace(q, '<mark>$&</mark>');
     }
 
@@ -443,7 +445,7 @@
         load(blogger(url) + param(extend(settings.query, {
             'callback': '_' + fn,
             'max-results': chunk,
-            'q': encode(q),
+            'q': q,
             'start-index': i
         })), function() {
             reset_class(parent, name + '-loading');
